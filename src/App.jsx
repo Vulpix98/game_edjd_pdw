@@ -35,6 +35,7 @@ function App ()
         //     </div>
         //     <MainMenu />
         // </div>
+        
         <MainMenu />
     )
 }
