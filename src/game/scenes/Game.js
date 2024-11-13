@@ -32,3 +32,6 @@ export class Game extends Scene
 
     }
 }
+
+
+export default Game;

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import Phaser from 'phaser';
 import { PhaserGame } from './game/PhaserGame';
+import MainMenu from './game/scenes/MainMenu';
 
 function App ()
 {
@@ -25,14 +26,17 @@ function App ()
     }
 
     return (
-        <div id="app">
-            <PhaserGame ref={phaserRef} />
-            <div>
-                <div>
-                    <button className="button" onClick={addSprite}>Add New Sprite</button>
-                </div>
-            </div>
-        </div>
+        // <div id="app">
+        //     <PhaserGame ref={phaserRef} />
+        //     <div>
+        //         <div>
+        //             <button className="button" onClick={addSprite}>Add New Sprite</button>
+        //         </div>
+        //     </div>
+        //     <MainMenu />
+        // </div>
+        
+        <MainMenu />
     )
 }
 
