@@ -1,5 +1,6 @@
 import { Game as MainGame } from './scenes/Game';
 import { AUTO, Game } from 'phaser';
+import MainMenu from './scenes/MainMenu';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -10,7 +11,8 @@ const config = {
     parent: 'game-container',
     backgroundColor: '#028af8',
     scene: [
-        MainGame
+        MainGame,
+        MainMenu
     ]
 };
 
