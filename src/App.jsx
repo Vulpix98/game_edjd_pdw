@@ -26,15 +26,16 @@ function App ()
     }
 
     return (
-        <div id="app">
-            <PhaserGame ref={phaserRef} />
-            <div>
-                <div>
-                    <button className="button" onClick={addSprite}>Add New Sprite</button>
-                </div>
-            </div>
-            <MainMenu />
-        </div>
+        // <div id="app">
+        //     <PhaserGame ref={phaserRef} />
+        //     <div>
+        //         <div>
+        //             <button className="button" onClick={addSprite}>Add New Sprite</button>
+        //         </div>
+        //     </div>
+        //     <MainMenu />
+        // </div>
+        <MainMenu />
     )
 }
 
