@@ -18,6 +18,8 @@ This template has been updated for:
 
 [Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
 
+Recommended version `>=18.18` but during development were using `18.20.4`
+
 ## Available Commands
 
 | Command | Description |
