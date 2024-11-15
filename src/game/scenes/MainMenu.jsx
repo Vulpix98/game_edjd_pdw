@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import Game from './Game'; // Importe a classe Game
+import GameDev from './GameDev'; // Importe a classe GameDev
 
 const MainMenu = () => {
   // Criando uma referência para armazenar a instância do Phaser
@@ -10,11 +11,21 @@ const MainMenu = () => {
   useEffect(() => {
     // Configuração inicial do Phaser com a cena do menu principal.
     const config = {
-      type: Phaser.AUTO,
-      width: 800,
-      height: 600,
-      parent: 'phaser-game-container', // O contêiner do Phaser
-      scene: [], // Não carregue nenhuma cena inicial
+        type: Phaser.AUTO,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            width: window.innerWidth,
+            height: window.innerHeight
+        },
+        scene: [],
+        physics: {
+            default: 'arcade',
+            arcade: {
+                debug: true
+            }
+        },
+        pixelArt: true
     };
 
     // Cria a instância do Phaser e a armazena na referência
@@ -34,6 +45,17 @@ const MainMenu = () => {
       // Adiciona a cena "Game" dinamicamente
       gameRef.current.scene.add('game', Game); // Adiciona a cena 'game' ao Phaser
       gameRef.current.scene.start('Game'); // Inicia a cena 'game'
+
+      // Destruir a cena atual (MainMenu) para que ela não apareça mais
+      gameRef.current.scene.remove('mainMenu');
+    }
+  };
+
+  const startGameDev = () => {
+    if (gameRef.current) {
+      // Adiciona a cena "Game" dinamicamente
+      gameRef.current.scene.add('gamedev', GameDev); // Adiciona a cena 'game' ao Phaser
+      gameRef.current.scene.start('GameDev'); // Inicia a cena 'game'
 
       // Destruir a cena atual (MainMenu) para que ela não apareça mais
       gameRef.current.scene.remove('mainMenu');
@@ -61,9 +83,20 @@ const MainMenu = () => {
             padding: { x: 20, y: 10 },
           }).setOrigin(0.5).setInteractive();
 
+          const startDevButton = this.add.text(400, 350, 'Start Dev Now', {
+            fontSize: '24px',
+            fill: '#fff',
+            backgroundColor: '#000',
+            padding: { x: 20, y: 10 },
+          }).setOrigin(0.5).setInteractive();
+
           // Interação com o botão
           startButton.on('pointerdown', () => {
             startGame();
+          });
+
+          startDevButton.on('pointerdown', () => {
+            startGameDev();
           });
         }
       });
