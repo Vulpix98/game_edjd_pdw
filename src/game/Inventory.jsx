@@ -26,9 +26,15 @@ const Inventory = () => {
     <div className="inventory">
       <h1>Inventário</h1>
       
-      <div>
-
-      </div>
+      <table>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </table>
 
       <button onClick={() => eventEmitter.emit('toggle-inventory')}>Fechar Inventário</button>
     </div>
