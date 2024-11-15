@@ -1,7 +1,7 @@
 // src/scenes/MainMenu.jsx
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import Game from './Game'; // Importe a classe Game
+import Cutscene from './Game'; // Importe a classe Game
 import GameDev from './GameDev'; // Importe a classe GameDev
 
 const MainMenu = () => {
@@ -43,8 +43,8 @@ const MainMenu = () => {
   const startGame = () => {
     if (gameRef.current) {
       // Adiciona a cena "Game" dinamicamente
-      gameRef.current.scene.add('game', Game); // Adiciona a cena 'game' ao Phaser
-      gameRef.current.scene.start('Game'); // Inicia a cena 'game'
+      gameRef.current.scene.add('game', Cutscene); // Adiciona a cena 'game' ao Phaser
+      gameRef.current.scene.start('Cutscene'); // Inicia a cena 'game'
 
       // Destruir a cena atual (MainMenu) para que ela não apareça mais
       gameRef.current.scene.remove('mainMenu');
