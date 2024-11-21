@@ -1,0 +1,9 @@
+.item {
+    display: flex;
+    background-color: white;
+    width: 45px;
+    height: 45px;
+    opacity: 70%;
+    align-items: center;
+    justify-content: center;
+}

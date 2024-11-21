@@ -1,17 +1,14 @@
 // Inventory.jsx
 import React, { useContext, useEffect, useState } from 'react';
-import InventoryContext, { useInventory } from './InventoryContext';
+import InventoryContext from './InventoryContext';
+import ItemList from './Items/ItemList';
 import eventEmitter from './EventEmitter';
 import '../../public/inventory.css';
 
 const Inventory = () => {
-  const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory, combineItems } = useContext(InventoryContext);
+  const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory, combineItems } =
+    useContext(InventoryContext);
   const [draggedItem, setDraggedItem] = useState(null);
-
-  const itemTextures = {
-    wood: '../../public/assets/Textures/tree.png',
-    stone: '../../public/assets/Textures/rock.png',
-  };
 
   useEffect(() => {
     const handleToggleInventory = () => {
@@ -27,12 +24,12 @@ const Inventory = () => {
 
   useEffect(() => {
     const handleAddToInventory = ({ type, quantity }) => {
-      // console.log('Evento recebido:', { type, quantity });
-      addItemToInventory({ type, quantity });
+      console.log('Recurso coletado:', { type, quantity });
+      addItemToInventory({ type, quantity }); // Certifique-se de que esta função atualiza o estado global do inventário
     };
-
+  
     eventEmitter.on('add-to-inventory', handleAddToInventory);
-
+  
     return () => {
       eventEmitter.removeListener('add-to-inventory', handleAddToInventory);
     };
@@ -44,50 +41,28 @@ const Inventory = () => {
 
   const handleDrop = (targetItem) => {
     if (draggedItem && targetItem) {
-      // console.log(draggedItem, targetItem);
       combineItems([draggedItem, targetItem]);
     }
     setDraggedItem(null);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault(); // Permite o "drop"
   };
 
   if (!isInventoryOpen) return null;
 
   return (
     <div className="inventory">
-      <h1>Inventário</h1>        
-      <table>
-      <tbody>
-        {inventoryItems.map((item, index) => (
-          <tr
-            key={index}
-            draggable
-            onDragStart={() => handleDragStart(item)}
-            onDrop={() => handleDrop(item)}
-            onDragOver={handleDragOver}
-          >
-            <td>
-              <div className="items">
-                <img
-                  src={itemTextures[item.type]}
-                  alt={itemTextures[item.type]}
-                  style={{ width: '32px', height: '32px' }}
-                />
-              </div>
-            </td>
-            <td>{item.quantity}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-
-    <button onClick={() => eventEmitter.emit('toggle-inventory')}>Fechar Inventário</button>
-  </div >
+      <h1>Inventário</h1>
+      <ItemList
+        items={inventoryItems}
+        onDragStart={handleDragStart}
+        onDrop={handleDrop}
+      />
+      <button onClick={() => eventEmitter.emit('toggle-inventory')}>
+        Fechar Inventário
+      </button>
+    </div>
   );
 };
 
 export default Inventory;
+
 
