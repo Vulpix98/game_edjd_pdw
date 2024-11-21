@@ -1,6 +1,6 @@
 // App.js
 import React from 'react';
-import { InventoryProvider } from './game/InvtoryContext';
+import { InventoryProvider } from './game/InventoryContext';
 import Inventory from './game/Inventory';
 import MainMenu from './game/scenes/MainMenu';
 

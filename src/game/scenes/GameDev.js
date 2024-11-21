@@ -76,6 +76,16 @@ export class GameDev extends Scene {
         this.player = this.physics.add.sprite(100, 100, 'player');
         this.player.body.setSize(16, 16).setOffset(8, 16);
 
+        // Criar o NPC com hitbox
+        this.npc = this.physics.add.sprite(200, 150, 'player');
+        this.npc.body.setSize(16, 16).setOffset(8, 16);
+        this.npc.setImmovable(true); // NPC não se move
+        this.npc.setInteractive(); // Habilitar interatividade para o NPC
+        this.npc.setData('type', 'npc'); // Tag para identificar o NPC
+
+        // Adicionar colisão entre jogador e NPC
+        this.physics.add.collider(this.player, this.npc);
+
         // Colidir o jogador com as hitboxes das árvores e pedras
         this.resources.forEach(resource => {
             this.physics.add.collider(this.player, resource);
@@ -94,18 +104,29 @@ export class GameDev extends Scene {
 
         // Registra o ouvinte para o evento 'toggle-inventory' na cena
         this.events.on('toggle-inventory', () => {
-            console.log("Evento toggle-inventory recebido!");
+            // console.log("Evento toggle-inventory recebido!");
             toggleInventory(); // Chama a função para alternar a visibilidade do inventário
         });
 
         // Captura da tecla 'E' para alternar o inventário
         this.input.keyboard.on('keydown-E', () => {
-            console.log('Tecla E pressionada!');
+            // console.log('Tecla E pressionada!');
             eventEmitter.emit('toggle-inventory'); // Emite o evento para alternar o inventário
         });
 
         // Configurar o evento para o botão de ação (barra de espaço)
         this.input.keyboard.on('keydown-SPACE', this.collectResource, this);
+
+        this.input.keyboard.on('keydown-SPACE', () => {
+            const distance = Phaser.Math.Distance.Between(
+                this.player.x, this.player.y,
+                this.npc.x, this.npc.y
+            );
+
+            if (distance < 50) { // Distância para interação
+                this.interactWithNPC(this.npc);
+            }
+        });
 
         // Focar a câmera no jogador
         this.cameras.main.startFollow(this.player);
@@ -172,10 +193,34 @@ export class GameDev extends Scene {
                         }
                     }
                 }
-                resource.destroy();
+
+                const type = resource.getData('type'); // Tipo do recurso (ex.: 'tree' ou 'rock')
+                const randomQuantity = Math.floor(Math.random() * 4) + 1; // Quantidade aleatória de 1 a 4
+
+                resource.destroy(); // Remove o recurso do mapa
+
+                // Modificar o tipo do recurso, se necessário
+                let modifiedType = type;
+
+                if (type === 'tree') {
+                    modifiedType = 'wood'; // Alterando o tipo de 'tree' para 'wood'
+                } else if (type === 'rock') {
+                    modifiedType = 'stone'; // Alterando o tipo de 'rock' para 'stone'
+                }
+
+
+                // Atualiza o inventário enviando o recurso coletado
+                eventEmitter.emit('add-to-inventory', { type: modifiedType, quantity: randomQuantity });
             }
         });
-    } 
+    }
+
+    interactWithNPC(npc) {
+        // Função para lidar com a interação com o NPC
+        console.log(`Interagindo com o NPC! Tipo: ${npc.getData('type')}`);
+        // Adicione aqui a lógica para diálogo, missão ou outro evento
+        eventEmitter.emit('npc-interaction', { message: 'Olá, jogador! Eu sou um NPC.' });
+    }
 }
 
 export default GameDev
