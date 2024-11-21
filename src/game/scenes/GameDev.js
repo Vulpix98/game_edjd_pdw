@@ -149,6 +149,17 @@ export class GameDev extends Scene {
         } else if (this.cursors.down.isDown || this.keys.down.isDown) {
             this.player.setVelocityY(100);
         }
+
+        const distance = Phaser.Math.Distance.Between(
+            this.player.x, this.player.y,
+            this.npc.x, this.npc.y
+        );
+        
+        const maxInteractionDistance = 100; // Distância máxima permitida para manter a interação
+        
+        if (distance > maxInteractionDistance) {
+            eventEmitter.emit('npc-close'); // Emite evento para fechar o NPC
+        }
     }
 
     collectResource() {
@@ -219,7 +230,8 @@ export class GameDev extends Scene {
         // Função para lidar com a interação com o NPC
         console.log(`Interagindo com o NPC! Tipo: ${npc.getData('type')}`);
         // Adicione aqui a lógica para diálogo, missão ou outro evento
-        eventEmitter.emit('npc-interaction', { message: 'Olá, jogador! Eu sou um NPC.' });
+        // eventEmitter.emit('npc-interaction', { message: 'Olá, jogador! Eu sou um NPC.' });
+        eventEmitter.emit('npc-interaction', { type: npc.getData('type'), message: 'Olá, jogador! Eu sou um NPC.' });
     }
 }
 
