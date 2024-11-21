@@ -60,29 +60,32 @@ const Inventory = () => {
     <div className="inventory">
       <h1>Inventário</h1>        
       <table>
-        <tbody>
-          {inventoryItems.map((item, index) => (
-            <tr key={index}
-              draggable
-              onDragStart={() => handleDragStart(item)}
-              onDrop={() => handleDrop(item)}
-              onDragOver={handleDragOver}
-            >
+      <tbody>
+        {inventoryItems.map((item, index) => (
+          <tr
+            key={index}
+            draggable
+            onDragStart={() => handleDragStart(item)}
+            onDrop={() => handleDrop(item)}
+            onDragOver={handleDragOver}
+          >
+            <td>
               <div className="items">
-                <img 
-                  src={itemTextures[item.type]} 
-                  alt={itemTextures[item.type]} 
-                  style={{ width: '32px', height: '32px' }} 
+                <img
+                  src={itemTextures[item.type]}
+                  alt={itemTextures[item.type]}
+                  style={{ width: '32px', height: '32px' }}
                 />
-                <td>{item.quantity}</td>
               </div>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </td>
+            <td>{item.quantity}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
 
     <button onClick={() => eventEmitter.emit('toggle-inventory')}>Fechar Inventário</button>
-  </div>
+  </div >
   );
 };
 
