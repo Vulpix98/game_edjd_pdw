@@ -1,9 +1,18 @@
 .item {
     display: flex;
-    background-color: white;
+    background-color: #eee;
     width: 45px;
     height: 45px;
-    opacity: 70%;
     align-items: center;
     justify-content: center;
+    border: 1px solid black;
+}
+
+.quantity {
+    color: black;
+}
+
+.item-list {
+    display: flex;
+    margin-bottom: 2rem;
 }

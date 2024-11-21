@@ -7,10 +7,6 @@ export const InventoryProvider = ({ children }) => {
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [inventoryItems, setInventoryItems] = useState([]);
 
-  const recipes = [
-    { input: ['wood', 'stone'], output: { type: 'axe', quantity: 1 } },
-  ];
-
   const addItemToInventory = (item) => {
     setInventoryItems((prevItems) => {
       const existingItem = prevItems.find((invItem) => invItem.type === item.type);
@@ -51,6 +47,36 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
+  const craftWithNPC = (inputItems, outputItem) => {
+    // Verifica se todos os itens necessários estão disponíveis
+    const hasItems = inputItems.every((input) => {
+      const item = inventoryItems.find((i) => i.type === input.type);
+      return item && item.quantity >= input.quantity;
+    });
+  
+    if (!hasItems) {
+      return false; // Falha ao craftar
+    }
+  
+    // Remove os itens usados do inventário
+    const updatedInventory = inventoryItems
+      .map((item) => {
+        const input = inputItems.find((i) => i.type === item.type);
+        if (input) {
+          return { ...item, quantity: item.quantity - input.quantity };
+        }
+        return item;
+      })
+      .filter((item) => item.quantity > 0); // Remove itens com quantidade 0
+  
+    setInventoryItems(updatedInventory);
+  
+    // Adiciona o item craftado ao inventário
+    addItemToInventory(outputItem);
+  
+    return true; // Sucesso ao craftar
+  };
+
   return (
     <InventoryContext.Provider
       value={{
@@ -59,6 +85,7 @@ export const InventoryProvider = ({ children }) => {
         inventoryItems,
         addItemToInventory,
         combineItems,
+        craftWithNPC,
       }}
     >
       {children}

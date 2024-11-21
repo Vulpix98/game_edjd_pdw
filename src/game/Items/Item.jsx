@@ -8,8 +8,6 @@ const Item = ({ item, onDragStart, onDrop, draggable = false }) => {
     axe: '../../../public/assets/Textures/axe.png',
   };
 
-  console.log(item.type);
-
   return (
     <div
       className="item"

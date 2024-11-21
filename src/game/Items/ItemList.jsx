@@ -1,6 +1,6 @@
 import React from 'react';
 import Item from './Item';
-import '../../../public/ItemList.css'
+import '../../../public/Items.css'
 
 const ItemList = ({ items, onDragStart, onDrop }) => {
   return (

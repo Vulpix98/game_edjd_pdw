@@ -1,9 +1,9 @@
 // Inventory.jsx
 import React, { useContext, useEffect, useState } from 'react';
 import InventoryContext from './InventoryContext';
-import ItemList from './Items/ItemList';
-import eventEmitter from './EventEmitter';
-import '../../public/inventory.css';
+import ItemList from '../Items/ItemList';
+import eventEmitter from '../EventEmitter';
+import '../../../public/inventory.css';
 
 const Inventory = () => {
   const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory, combineItems } =
@@ -24,7 +24,7 @@ const Inventory = () => {
 
   useEffect(() => {
     const handleAddToInventory = ({ type, quantity }) => {
-      console.log('Recurso coletado:', { type, quantity });
+      // console.log('Recurso coletado:', { type, quantity });
       addItemToInventory({ type, quantity }); // Certifique-se de que esta função atualiza o estado global do inventário
     };
   
