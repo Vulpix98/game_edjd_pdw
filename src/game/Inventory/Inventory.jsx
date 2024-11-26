@@ -6,7 +6,7 @@ import eventEmitter from '../EventEmitter';
 import '../../../public/inventory.css';
 
 const Inventory = () => {
-  const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory, combineItems } = useContext(InventoryContext);
+  const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory } = useContext(InventoryContext);
   const [draggedItem, setDraggedItem] = useState(null);
 
   useEffect(() => {
@@ -23,8 +23,7 @@ const Inventory = () => {
 
   useEffect(() => {
     const handleAddToInventory = ({ type, quantity }) => {
-      // console.log('Recurso coletado:', { type, quantity });
-      addItemToInventory({ type, quantity }); // Certifique-se de que esta função atualiza o estado global do inventário
+      addItemToInventory({ type, quantity });
     };
   
     eventEmitter.on('add-to-inventory', handleAddToInventory);
@@ -40,7 +39,7 @@ const Inventory = () => {
 
   const handleDrop = (targetItem) => {
     if (draggedItem && targetItem) {
-      combineItems([draggedItem, targetItem]);
+      // Lógica para o arraste sem a combinação de itens
     }
     setDraggedItem(null);
   };
@@ -63,5 +62,3 @@ const Inventory = () => {
 };
 
 export default Inventory;
-
-
