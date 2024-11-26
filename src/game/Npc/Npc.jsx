@@ -14,7 +14,7 @@ const NPC = () => {
                 { type: 'wood', quantity: 4 },
                 { type: 'stone', quantity: 2 },
             ],
-            output: { type: 'Crafting Table', quantity: 1 },
+            output: { type: 'crafting', quantity: 1 },
         },
     ];
 

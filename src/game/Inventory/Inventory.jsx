@@ -6,8 +6,7 @@ import eventEmitter from '../EventEmitter';
 import '../../../public/inventory.css';
 
 const Inventory = () => {
-  const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory, combineItems } =
-    useContext(InventoryContext);
+  const { isInventoryOpen, setIsInventoryOpen, inventoryItems, addItemToInventory, combineItems } = useContext(InventoryContext);
   const [draggedItem, setDraggedItem] = useState(null);
 
   useEffect(() => {
