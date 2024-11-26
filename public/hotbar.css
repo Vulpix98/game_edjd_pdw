@@ -1,0 +1,51 @@
+.hotbar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+    gap: 8px;
+}
+
+.hotbar-slot {
+    width: 50px;
+    height: 50px;
+    background-color: #555;
+    border: 2px solid #777;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.hotbar-slot.selected {
+    border: 2px solid #aaa;
+}
+
+.hotbar-item img {
+    pointer-events: none; /* Previne o arrasto da imagem diretamente */
+}
+
+.hotbar-item button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 50%;
+}
+
+.hotbar-placeholder {
+    color: #aaa;
+    font-size: 24px;
+    user-select: none;
+}
+  

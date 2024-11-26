@@ -1,9 +1,11 @@
 // InventoryContext.jsx
 import React, { createContext, useState, useContext } from 'react';
+import HotbarContext from '../Hotbar/HotbarContext';
 
 const InventoryContext = createContext();
 
 export const InventoryProvider = ({ children }) => {
+  const { hotbarItems, addItemToHotbar, setHotbarItems } = useContext(HotbarContext); // Acessa o hotbarItems
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [inventoryItems, setInventoryItems] = useState([]);
 
@@ -22,43 +24,17 @@ export const InventoryProvider = ({ children }) => {
     });
   };
 
-  const combineItems = (itemsToCombine) => {
-    const recipe = recipes.find((recipe) =>
-      recipe.input.every((input) =>
-        itemsToCombine.some((item) => item.type === input),
-      )
-    );
-
-    if (recipe) {
-      // Remover os itens usados da lista
-      setInventoryItems((prevItems) =>
-        prevItems.map((item) => {
-          if (recipe.input.includes(item.type)) {
-            return { ...item, quantity: item.quantity - 1 };
-          }
-          return item;
-        }).filter((item) => item.quantity > 0)
-      );
-
-      // Adicionar o item resultante
-      addItemToInventory(recipe.output);
-    } else {
-      console.log('Nenhuma combinação válida encontrada!');
-    }
-  };
-
   const craftWithNPC = (inputItems, outputItem) => {
-    // Verifica se todos os itens necessários estão disponíveis
     const hasItems = inputItems.every((input) => {
       const item = inventoryItems.find((i) => i.type === input.type);
       return item && item.quantity >= input.quantity;
     });
   
     if (!hasItems) {
-      return false; // Falha ao craftar
+      return false;
     }
   
-    // Remove os itens usados do inventário
+    // Atualiza o inventário
     const updatedInventory = inventoryItems
       .map((item) => {
         const input = inputItems.find((i) => i.type === item.type);
@@ -67,14 +43,36 @@ export const InventoryProvider = ({ children }) => {
         }
         return item;
       })
-      .filter((item) => item.quantity > 0); // Remove itens com quantidade 0
+      .filter((item) => item.quantity > 0);
   
     setInventoryItems(updatedInventory);
+  
+    // Atualiza a hotbar
+    const updatedHotbar = hotbarItems.map((slot) => {
+      if (!slot) return null; // Ignora slots vazios
+      const input = inputItems.find((i) => i.type === slot.type);
+      if (input) {
+        const remainingQuantity = slot.quantity - input.quantity;
+        return remainingQuantity > 0
+          ? { ...slot, quantity: remainingQuantity }
+          : null; // Remove o item se quantidade <= 0
+      }
+      return slot;
+    });
+  
+    setHotbarItems(updatedHotbar); // Atualiza a hotbar
   
     // Adiciona o item craftado ao inventário
     addItemToInventory(outputItem);
   
-    return true; // Sucesso ao craftar
+    // Adiciona o item craftado à hotbar no primeiro slot vazio
+    const firstEmptySlot = updatedHotbar.findIndex((slot) => slot === null);
+    if (firstEmptySlot !== -1) {
+      updatedHotbar[firstEmptySlot] = outputItem;
+      setHotbarItems(updatedHotbar); // Atualiza novamente para incluir o item craftado
+    }
+  
+    return true;
   };
 
   return (
@@ -84,7 +82,6 @@ export const InventoryProvider = ({ children }) => {
         setIsInventoryOpen,
         inventoryItems,
         addItemToInventory,
-        combineItems,
         craftWithNPC,
       }}
     >
@@ -96,4 +93,3 @@ export const InventoryProvider = ({ children }) => {
 export const useInventory = () => useContext(InventoryContext);
 
 export default InventoryContext;
-
