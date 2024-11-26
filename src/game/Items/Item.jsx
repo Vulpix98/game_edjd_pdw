@@ -5,7 +5,7 @@ const Item = ({ item, onDragStart, onDrop, draggable = false }) => {
   const itemTextures = {
     wood: '../../../public/assets/Textures/tree.png',
     stone: '../../../public/assets/Textures/rock.png',
-    axe: '../../../public/assets/Textures/axe.png',
+    crafting: '../../../public/assets/Textures/crafting.png',
   };
 
   return (
