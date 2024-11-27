@@ -4,6 +4,7 @@ import InventoryContext from '../Inventory/InventoryContext';
 import HotbarContext from '../Hotbar/HotbarContext';
 import ItemList from '../Items/ItemList';
 import eventEmitter from '../EventEmitter';
+import "./npc.css";
 
 const NPC = () => {
     const { inventoryItems, craftWithNPC } = useContext(InventoryContext);
@@ -59,7 +60,7 @@ const NPC = () => {
         <div className="npc">
             <h2>NPC de Crafting</h2>
             {npcMessage && <p>{npcMessage}</p>}
-            <button onClick={() => setIsNPCVisible(false)}>Fechar</button>
+            <button id="close" onClick={() => setIsNPCVisible(false)}>X</button>
             <h3>Suas Receitas:</h3>
             {recipes.map((recipe, index) => (
                 <div key={index} className="recipe">

@@ -1,0 +1,26 @@
+.npc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    background-image: url("../../../public/assets/Textures/scroll.png");
+
+}
+
+#close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+
+}
+
+
+
+/* test */
+.npc,
+.recipe {
+    border: 2px solid red;
+}
+
