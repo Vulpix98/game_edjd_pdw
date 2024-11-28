@@ -58,14 +58,14 @@ const NPC = () => {
 
     return (
         <div className="npc">
-            <h2>NPC de Crafting</h2>
-            {npcMessage && <p>{npcMessage}</p>}
+            <h2 className="center">NPC de Crafting</h2>
+            {npcMessage && <p className="center">{npcMessage}</p>}
             <button id="close" onClick={() => setIsNPCVisible(false)}>X</button>
-            <h3>Suas Receitas:</h3>
+            <h3 className="center">Suas Receitas:</h3>
             {recipes.map((recipe, index) => (
-                <div key={index} className="recipe">
+                <div key={index} className="recipe column center ">
                     <ItemList items={recipe.input} />
-                    <button onClick={() => handleCraft(recipe)}>Craftar</button>
+                    <button  onClick={() => handleCraft(recipe)}>Craftar</button>
                 </div>
             ))}
         </div>
