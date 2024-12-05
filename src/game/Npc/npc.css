@@ -1,0 +1,68 @@
+/* classes genericas */
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.column {
+    align-items: center; 
+    flex-direction: column;
+}
+
+
+
+
+
+.npc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    background-image: url("../../../public/assets/Textures/scroll.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+    width: 35%;
+    height: 80%;
+
+    
+}
+
+.npc p {
+    margin-top: 4rem;
+}
+
+
+
+/* remove default settings of button */
+#close {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+    text-align: inherit;
+    font: inherit;
+    border-radius: 0;
+    appearance: none;
+}
+
+#close {
+    position: absolute;
+    top: 5%;
+    right: 7%;
+
+    cursor: pointer;
+
+}
+
+
+
+
+/* test */
+.npc,
+.recipe,
+#close {
+    border: 2px solid red;
+}
+
