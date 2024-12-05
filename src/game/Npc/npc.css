@@ -1,3 +1,18 @@
+/* classes genericas */
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.column {
+    align-items: center; 
+    flex-direction: column;
+}
+
+
+
+
+
 .npc {
     position: absolute;
     left: 50%;
@@ -14,15 +29,11 @@
     
 }
 
-.center {
-    display: flex;
-    justify-content: center;
+.npc p {
+    margin-top: 4rem;
 }
 
-.column {
-    align-items: center; 
-    flex-direction: column;
-}
+
 
 /* remove default settings of button */
 #close {
@@ -50,7 +61,8 @@
 
 /* test */
 .npc,
-.recipe {
+.recipe,
+#close {
     border: 2px solid red;
 }
 
