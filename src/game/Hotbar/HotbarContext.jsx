@@ -1,5 +1,6 @@
 // HotbarContext.jsx
 import React, { createContext, useState, useContext } from 'react';
+import eventEmitter from '../EventEmitter';
 
 const HotbarContext = createContext();
 
@@ -14,7 +15,10 @@ export const HotbarProvider = ({ children }) => {
   };
 
   const selectSlot = (index) => {
-    setSelectedSlot(index); // Atualiza o slot selecionado
+    setSelectedSlot(index);
+    const selectedItem = hotbarItems[index]; // Obtém o item do slot selecionado
+
+    eventEmitter.emit('slotSelected', { slotIndex: index, item: selectedItem });
   };
 
   return (
