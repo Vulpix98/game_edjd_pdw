@@ -1,14 +1,29 @@
-// BarrasContext.jsx
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import eventEmitter from '../EventEmitter';
 
 const BarrasContext = createContext();
 
 export const BarrasProvider = ({ children }) => {
-  const [barrasState, setBarrasState] = useState({ x: 100, y: 100, size: 100, color: 0xff0000 });
+  const [barrasState, setBarrasState] = useState({ vidaHeight: 100 });
 
   const updateBarras = (newState) => {
     setBarrasState((prev) => ({ ...prev, ...newState }));
   };
+
+  useEffect(() => {
+    const handleReduceLife = ({ amount }) => {
+      setBarrasState((prev) => ({
+        ...prev,
+        vidaHeight: Math.max(0, prev.vidaHeight - amount), // Garante que não passe de 0
+      }));
+    };
+
+    eventEmitter.on('reduce-life', handleReduceLife);
+
+    return () => {
+      eventEmitter.removeListener('reduce-life', handleReduceLife);
+    };
+  }, []);
 
   return (
     <BarrasContext.Provider value={{ barrasState, updateBarras }}>

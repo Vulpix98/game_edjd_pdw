@@ -222,6 +222,9 @@ export class GameDev extends Scene {
 
                 // Atualiza o inventário enviando o recurso coletado
                 eventEmitter.emit('add-to-inventory', { type: modifiedType, quantity: randomQuantity });
+
+                // Emitir evento para reduzir vida ao coletar recurso
+                eventEmitter.emit('reduce-life', { amount: 10 }); // Reduz 10% da vida
             }
         });
     }
