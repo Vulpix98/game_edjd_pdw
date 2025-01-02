@@ -1,5 +1,37 @@
 .barras {
-    height: 200px;
-    width: 200px;
-    background-color: hotpink;
+    position: absolute;
+    bottom: 4rem;
+    
+    /* colocar as duas barras (vida e riqueza) em linha  */
+    display: inline-flex; 
+
+    margin: 1rem;
+    gap: 1rem;
 }
+
+.bVida,
+.bRiqueza {
+    width: 20px;
+    height: 100px;
+
+    border: 2px solid white;
+}
+
+.bVida {
+    background-color: green;
+}
+
+.bRiqueza {
+    background-color: gold;
+}
+
+/* a altura do after é que determina o quando mostra a cor principal (ver e gold) */
+.bVida::after,
+.bRiqueza::after {
+    content: "";
+    display: block;
+    background-color: black;
+    height: 90%;
+    width: 100%;
+}
+
