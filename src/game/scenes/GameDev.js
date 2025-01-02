@@ -273,9 +273,7 @@ export class GameDev extends Scene {
         this.physics.add.collider(this.player, craftingTable);
     
         // Configurações de física (garantir que a Crafting Table fique fixa no lugar)
-        craftingTable.body.velocity.set(0);
-        craftingTable.body.acceleration.set(0);
-        craftingTable.setImmovable(true);
+        craftingTable.body.setImmovable(true);
     
         // Habilita a interação com o sprite da Crafting Table
         craftingTable.setInteractive();
