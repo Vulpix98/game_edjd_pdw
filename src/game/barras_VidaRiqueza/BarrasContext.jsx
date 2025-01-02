@@ -4,24 +4,33 @@ import eventEmitter from '../EventEmitter';
 const BarrasContext = createContext();
 
 export const BarrasProvider = ({ children }) => {
-  const [barrasState, setBarrasState] = useState({ vidaHeight: 100 });
+  const [barrasState, setBarrasState] = useState({ vidaHeight: 100, riquezaHeight: 100 });
 
   const updateBarras = (newState) => {
     setBarrasState((prev) => ({ ...prev, ...newState }));
   };
 
   useEffect(() => {
-    const handleReduceLife = ({ amount }) => {
+    const handleChangeLife = ({ amount }) => {
       setBarrasState((prev) => ({
         ...prev,
         vidaHeight: Math.max(0, prev.vidaHeight - amount), // Garante que não passe de 0
       }));
     };
 
-    eventEmitter.on('reduce-life', handleReduceLife);
+    const handleChangeWealth = ({ amount }) => {
+      setBarrasState((prev) => ({
+        ...prev,
+        riquezaHeight: Math.max(0, prev.riquezaHeight - amount), // Garante que não passe de 0
+      }));
+    };
+
+    eventEmitter.on('change-life', handleChangeLife);
+    eventEmitter.on('change-wealth', handleChangeWealth);
 
     return () => {
-      eventEmitter.removeListener('reduce-life', handleReduceLife);
+      eventEmitter.removeListener('change-life', handleChangeLife);
+      eventEmitter.removeListener('change-wealth', handleChangeWealth);
     };
   }, []);
 

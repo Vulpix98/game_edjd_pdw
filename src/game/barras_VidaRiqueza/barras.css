@@ -25,13 +25,20 @@
     background-color: gold;
 }
 
-/* a altura do after é que determina o quando mostra a cor principal (ver e gold) */
 .bVida::after,
 .bRiqueza::after {
     content: "";
     display: block;
     background-color: black;
-    height: var(--vida-height, 100%);
     width: 100%;
+}
+
+/* a altura do after é que determina o quando mostra a cor principal (ver e gold) */
+.bVida::after {
+    height: var(--vida-height, 100px);
+}
+
+.bRiqueza::after {
+    height: var(--riqueza-height, 100px);
 }
 
