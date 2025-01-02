@@ -14,6 +14,7 @@ export class GameDev extends Scene {
         this.load.image('trees', '/assets/GameDev/trees.png');
         this.load.image('rocks', '/assets/GameDev/rocks.png');
         // Carregar o sprite do jogador
+        this.load.image('crafting', './././public/assets/Textures/crafting.png');
         this.load.spritesheet('player', './././public/assets/GameDev/walk.png', { frameWidth: 32, frameHeight: 32 });
     }
 
@@ -29,10 +30,11 @@ export class GameDev extends Scene {
         this.treeLayer = map.createLayer('Tree', trees, 0, 0);
         this.rockLayer = map.createLayer('Rock', rocks, 0, 0);
 
+        // Organizar as camadas
         this.backgroundLayer.setDepth(0);
         this.treeLayer.setDepth(1);
         this.rockLayer.setDepth(2);
-
+        
         // Obter as camadas de hitboxes
         const treeHitboxLayer = map.getObjectLayer('Tree_Hitbox');
         const rockHitboxLayer = map.getObjectLayer('Rock_Hitbox');
@@ -73,15 +75,15 @@ export class GameDev extends Scene {
         });
 
         // Criar o jogador com hitbox
-        this.player = this.physics.add.sprite(100, 100, 'player');
+        this.player = this.physics.add.sprite(1216, 1250, 'player');
         this.player.body.setSize(16, 16).setOffset(8, 16);
 
         // Criar o NPC com hitbox
-        this.npc = this.physics.add.sprite(200, 150, 'player');
+        this.npc = this.physics.add.sprite(1300, 1250, 'player');
         this.npc.body.setSize(16, 16).setOffset(8, 16);
-        this.npc.setImmovable(true); // NPC não se move
-        this.npc.setInteractive(); // Habilitar interatividade para o NPC
-        this.npc.setData('type', 'npc'); // Tag para identificar o NPC
+        this.npc.setImmovable(true);
+        this.npc.setInteractive();
+        this.npc.setData('type', 'npc');
 
         // Adicionar colisão entre jogador e NPC
         this.physics.add.collider(this.player, this.npc);
@@ -99,19 +101,19 @@ export class GameDev extends Scene {
             up: Phaser.Input.Keyboard.KeyCodes.W,
             down: Phaser.Input.Keyboard.KeyCodes.S,
             left: Phaser.Input.Keyboard.KeyCodes.A,
-            right: Phaser.Input.Keyboard.KeyCodes.D
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            action: Phaser.Input.Keyboard.KeyCodes.SPACE,
+            interact: Phaser.Input.Keyboard.KeyCodes.E
         });
 
         // Registra o ouvinte para o evento 'toggle-inventory' na cena
         this.events.on('toggle-inventory', () => {
-            // console.log("Evento toggle-inventory recebido!");
-            toggleInventory(); // Chama a função para alternar a visibilidade do inventário
+            toggleInventory();
         });
 
         // Captura da tecla 'E' para alternar o inventário
         this.input.keyboard.on('keydown-E', () => {
-            // console.log('Tecla E pressionada!');
-            eventEmitter.emit('toggle-inventory'); // Emite o evento para alternar o inventário
+            eventEmitter.emit('toggle-inventory');
         });
 
         // Configurar o evento para o botão de ação (barra de espaço)
@@ -128,9 +130,13 @@ export class GameDev extends Scene {
             }
         });
 
+        eventEmitter.on('slotSelected', ({ slotIndex, item }) => {
+            this.interactWithSlot(slotIndex, item)
+        });
+
         // Focar a câmera no jogador
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setZoom(1);  // Opcional: Ajuste do zoom da 
+        this.cameras.main.setZoom(1);
 
         // Para debug: exibir as hitboxes
         this.physics.world.drawDebug = true;
@@ -150,16 +156,7 @@ export class GameDev extends Scene {
             this.player.setVelocityY(100);
         }
 
-        const distance = Phaser.Math.Distance.Between(
-            this.player.x, this.player.y,
-            this.npc.x, this.npc.y
-        );
-        
-        const maxInteractionDistance = 100; // Distância máxima permitida para manter a interação
-        
-        if (distance > maxInteractionDistance) {
-            eventEmitter.emit('npc-close'); // Emite evento para fechar o NPC
-        }
+        this.checkNPCDistance();
     }
 
     collectResource() {
@@ -224,15 +221,63 @@ export class GameDev extends Scene {
                 eventEmitter.emit('add-to-inventory', { type: modifiedType, quantity: randomQuantity });
             }
         });
-    }
+    } 
 
     interactWithNPC(npc) {
         // Função para lidar com a interação com o NPC
         console.log(`Interagindo com o NPC! Tipo: ${npc.getData('type')}`);
-        // Adicione aqui a lógica para diálogo, missão ou outro evento
-        // eventEmitter.emit('npc-interaction', { message: 'Olá, jogador! Eu sou um NPC.' });
         eventEmitter.emit('npc-interaction', { type: npc.getData('type'), message: 'Olá, jogador! Eu sou um NPC.' });
     }
+
+    checkNPCDistance() {
+        const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.npc.x, this.npc.y);
+        if (distance > 100) {
+            eventEmitter.emit('npc-close');
+        }
+    }
+
+    interactWithSlot(slotIndex, item) {
+        console.log(slotIndex, item);
+
+        if (item) {
+            if (item.type == "crafting") {
+                this.input.keyboard.on('keydown-SPACE', () => {
+                    this.placeCrafting(item);
+                });
+            }
+        }
+    }
+
+    placeCrafting(item) {
+        // Arredonda as coordenadas do jogador para o tile mais próximo na grade de 32x32
+        const tileX = Math.floor(this.player.x / 32) * 32;
+        const tileY = Math.floor(this.player.y / 32) * 32;
+    
+        // Define a posição relativa ao jogador (colocar a Crafting Table ao lado direito do jogador)
+        let craftingX = tileX + 32;  // Move um tile para a direita
+        let craftingY = tileY;
+    
+        // Adiciona o sprite da Crafting Table no tile ajustado
+        const craftingTable = this.add.sprite(craftingX + 16, craftingY + 16, item.type);
+        craftingTable.setOrigin(0.5); // Centraliza o sprite no tile
+        craftingTable.setDisplaySize(32, 32); // Garante que o sprite tenha 32x32 pixels
+    
+        // Ajuste da hitbox do sprite
+        craftingTable.setSize(32, 32);  // Define a hitbox para o tamanho do sprite (32x32)
+    
+        // Habilita a física para o sprite da Crafting Table
+        this.physics.world.enable(craftingTable);
+        this.physics.add.collider(this.player, craftingTable);
+    
+        // Configurações de física (garantir que a Crafting Table fique fixa no lugar)
+        craftingTable.body.velocity.set(0);
+        craftingTable.body.acceleration.set(0);
+        craftingTable.setImmovable(true);
+    
+        // Habilita a interação com o sprite da Crafting Table
+        craftingTable.setInteractive();
+    }
+    
 }
 
 export default GameDev
