@@ -26,6 +26,9 @@ const NPC = () => {
         const success = craftWithNPC(recipe.input, recipe.output);
         if (success) {
             alert(`Você criou: ${recipe.output.type}`);
+            // Emitir evento para reduzir vida ao coletar recurso
+            eventEmitter.emit('change-wealth', { amount: 10 }); 
+            eventEmitter.emit('change-life', { amount: -6 });
         } else {
             alert('Você não possui os itens necessários.');
         }
