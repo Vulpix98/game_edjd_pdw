@@ -141,14 +141,9 @@ export class GameDev extends Scene {
         });
 
         // Lógica de interação com a Mesa
-        // this.input.keyboard.on('keydown-SPACE', () => {
-        //     this.interactWithCraftingTable();
-        // });
-
-        this.input.keyboard.on('keydown-Q', () => {
+        this.input.keyboard.on('keydown-SPACE', () => {
             
             if (this.globalCraftingTable == null) {
-                console.log("xpto");
                 this.globalCraftingTable = Object;
                 this.globalCraftingTable.x = 99999;
                 this.globalCraftingTable.y = 99999;
@@ -312,6 +307,9 @@ export class GameDev extends Scene {
         
         this.globalCraftingTable.x = craftingX;
         this.globalCraftingTable.y = craftingY;
+
+        // decrementar a 'crafting table' no inventario
+        eventEmitter.emit('add-to-inventory', { type: 'crafting', quantity: -1 });
     }
 
     // Função para interagir com a Crafting Table
