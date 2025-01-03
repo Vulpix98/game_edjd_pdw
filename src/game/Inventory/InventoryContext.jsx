@@ -1,5 +1,5 @@
-// InventoryContext.jsx
 import React, { createContext, useState, useContext } from 'react';
+import eventEmitter from '../EventEmitter'; // Certifique-se de importar o eventEmitter
 import HotbarContext from '../Hotbar/HotbarContext';
 
 const InventoryContext = createContext();
@@ -15,8 +15,8 @@ export const InventoryProvider = ({ children }) => {
       if (existingItem) {
         return prevItems.map((invItem) =>
           invItem.type === item.type
-          ? { ...invItem, quantity: invItem.quantity + item.quantity }
-          : invItem
+            ? { ...invItem, quantity: invItem.quantity + item.quantity }
+            : invItem
         );
       } else {
         return [...prevItems, item];
@@ -25,53 +25,26 @@ export const InventoryProvider = ({ children }) => {
   };
 
   const craftWithNPC = (inputItems, outputItem) => {
-    const hasItems = inputItems.every((input) => {
-      const item = inventoryItems.find((i) => i.type === input.type);
-      return item && item.quantity >= input.quantity;
-    });
-  
-    if (!hasItems) {
-      return false;
-    }
-  
-    // Atualiza o inventário
-    const updatedInventory = inventoryItems
-      .map((item) => {
-        const input = inputItems.find((i) => i.type === item.type);
-        if (input) {
-          return { ...item, quantity: item.quantity - input.quantity };
-        }
-        return item;
-      })
-      .filter((item) => item.quantity > 0);
-  
-    setInventoryItems(updatedInventory);
-  
-    // Atualiza a hotbar
-    const updatedHotbar = hotbarItems.map((slot) => {
-      if (!slot) return null; // Ignora slots vazios
-      const input = inputItems.find((i) => i.type === slot.type);
-      if (input) {
-        const remainingQuantity = slot.quantity - input.quantity;
-        return remainingQuantity > 0
-          ? { ...slot, quantity: remainingQuantity }
-          : null; // Remove o item se quantidade <= 0
-      }
-      return slot;
-    });
-  
-    setHotbarItems(updatedHotbar); // Atualiza a hotbar
-  
-    // Adiciona o item craftado ao inventário
+    // Emitir evento de verificação dos itens (1º evento)
+    eventEmitter.emit('check-has-items', inputItems, inventoryItems);
+
+    // Emitir evento de atualização do inventário (2º evento)
+    eventEmitter.emit('update-inventory', inputItems, inventoryItems, setInventoryItems);
+
+    // Emitir evento de atualização da hotbar (3º evento)
+    eventEmitter.emit('update-hotbar', inputItems, hotbarItems, setHotbarItems);
+
+    // Adicionar item craftado ao inventário
     addItemToInventory(outputItem);
   
-    // Adiciona o item craftado à hotbar no primeiro slot vazio
+    // Adicionar o item craftado à hotbar no primeiro slot vazio
+    const updatedHotbar = [...hotbarItems];
     const firstEmptySlot = updatedHotbar.findIndex((slot) => slot === null);
     if (firstEmptySlot !== -1) {
       updatedHotbar[firstEmptySlot] = outputItem;
       setHotbarItems(updatedHotbar); // Atualiza novamente para incluir o item craftado
     }
-  
+
     return true;
   };
 
