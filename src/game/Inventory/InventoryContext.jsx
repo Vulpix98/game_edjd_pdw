@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext,useEffect, useState, useContext } from 'react';
 import eventEmitter from '../EventEmitter'; // Certifique-se de importar o eventEmitter
 import HotbarContext from '../Hotbar/HotbarContext';
 
@@ -24,6 +24,92 @@ export const InventoryProvider = ({ children }) => {
     });
   };
 
+  // Escutando o evento check-has-items  -> 1º
+  useEffect(() => {
+    const handleHasItemsCheck = (inputItems, inventoryItems) => {
+      const hasItems = inputItems.every((input) => {
+        const item = inventoryItems.find((i) => i.type === input.type);
+        return item && item.quantity >= input.quantity;
+      });
+
+      console.log('Itens suficientes?', hasItems); // Aqui você pode adicionar a lógica do que fazer com essa informação
+    };
+
+    eventEmitter.on('check-has-items', handleHasItemsCheck);
+
+    return () => {
+      eventEmitter.removeListener('check-has-items', handleHasItemsCheck);
+    };
+  }, []);
+
+  // Escutando o evento update-inventory  -> 2º
+  useEffect(() => {
+    const handleInventoryUpdate = (inputItems, inventoryItems) => {
+      const updatedInventory = inventoryItems
+        .map((item) => {
+          const input = inputItems.find((i) => i.type === item.type);
+          if (input) {
+            return { ...item, quantity: item.quantity - input.quantity }; // Decrementa o item
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0); // Remove itens com quantidade <= 0
+
+      setInventoryItems(updatedInventory); // Atualiza o inventário
+      console.log('Inventário atualizado 222 :', updatedInventory);
+    };
+
+    eventEmitter.on('update-inventory', handleInventoryUpdate);
+
+    return () => {
+      eventEmitter.removeListener('update-inventory', handleInventoryUpdate);
+    };
+  }, []);
+
+  // Escutando o evento update-hotbar  -> 3º
+  useEffect(() => {
+    const handleHotbarUpdate = (inputItems, hotbarItems) => {
+      const updatedHotbar = hotbarItems.map((slot) => {
+        if (!slot) return null; // Ignora slots vazios
+        const input = inputItems.find((i) => i.type === slot.type);
+        if (input) {
+          const remainingQuantity = slot.quantity - input.quantity;
+          return remainingQuantity > 0
+            ? { ...slot, quantity: remainingQuantity }
+            : null; // Remove o item se quantidade <= 0
+        }
+        return slot;
+      });
+
+      setHotbarItems(updatedHotbar); // Atualiza a hotbar
+      console.log('Hotbar atualizada:', updatedHotbar);
+    };
+
+    eventEmitter.on('update-hotbar', handleHotbarUpdate);
+
+    return () => {
+      eventEmitter.removeListener('update-hotbar', handleHotbarUpdate);
+    };
+  }, []);
+
+
+  // Emitir evento com o inventário atualizado
+  useEffect(() => {
+    const handleGetInventoryRequest = (callback) => {
+      // Chama o callback com os itens do inventário
+      callback(inventoryItems);
+    };
+  
+    eventEmitter.on('get-inventory', handleGetInventoryRequest);
+  
+    return () => {
+      eventEmitter.removeListener('get-inventory', handleGetInventoryRequest);
+    };
+  }, [inventoryItems]);
+  
+
+
+
   const craftWithNPC = (inputItems, outputItem) => {
     // Emitir evento de verificação dos itens (1º evento)
     eventEmitter.emit('check-has-items', inputItems, inventoryItems);
@@ -32,7 +118,7 @@ export const InventoryProvider = ({ children }) => {
     eventEmitter.emit('update-inventory', inputItems, inventoryItems, setInventoryItems);
 
     // Emitir evento de atualização da hotbar (3º evento)
-    eventEmitter.emit('update-hotbar', inputItems, hotbarItems, setHotbarItems);
+    eventEmitter.emit('update-hotbar', inputItems, hotbarItems);
 
     // Adicionar item craftado ao inventário
     addItemToInventory(outputItem);

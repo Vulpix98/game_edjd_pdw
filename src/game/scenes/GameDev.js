@@ -281,36 +281,54 @@ export class GameDev extends Scene {
         // Arredonda as coordenadas do jogador para o tile mais próximo na grade de 32x32
         const tileX = Math.floor(this.player.x / 32) * 32;
         const tileY = Math.floor(this.player.y / 32) * 32;
-    
+      
         // Define a posição relativa ao jogador (colocar a Crafting Table ao lado direito do jogador)
         let craftingX = tileX + 32;  // Move um tile para a direita
         let craftingY = tileY;
-    
+      
         // Adiciona o sprite da Crafting Table no tile ajustado
         this.globalCraftingTable = this.add.sprite(craftingX + 16, craftingY + 16, item.type);
         this.globalCraftingTable.setOrigin(0.5); // Centraliza o sprite no tile
         this.globalCraftingTable.setDisplaySize(32, 32); // Garante que o sprite tenha 32x32 pixels
-    
+      
         // Ajuste da hitbox do sprite
         this.globalCraftingTable.setSize(32, 32);  // Define a hitbox para o tamanho do sprite (32x32)
-    
+      
         // Habilita a física para o sprite da Crafting Table
         this.physics.world.enable(this.globalCraftingTable);
         this.physics.add.collider(this.player, this.globalCraftingTable);
-    
+      
         // Configurações de física (garantir que a Crafting Table fique fixa no lugar)
         this.globalCraftingTable.body.setImmovable(true);
-    
+      
         // Habilita a interação com o sprite da Crafting Table
         this.globalCraftingTable.setInteractive();
-
-        
+      
+        // Atualiza a posição
         this.globalCraftingTable.x = craftingX;
-        this.globalCraftingTable.y = craftingY;
+        this.globalCraftingTable.y = craftingY;   
+        
 
-        // decrementar a 'crafting table' no inventario
-        eventEmitter.emit('add-to-inventory', { type: 'crafting', quantity: -1 });
+        // eventEmitter.on('get-inventory', (updatedInventory) => {
+        //     this.inventoryItems = updatedInventory;
+        // });
+
+        // console.log("test");
+        // console.log("Inventário Atualizado 111 :", this.inventoryItems);
+        // eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], this.inventoryItems);
+    
+
+        // Emite o evento 'get-inventory' passando um callback
+        eventEmitter.emit('get-inventory', (inventoryItems) => {
+            console.log('Inventário atual:', inventoryItems);
+            // Aqui você pode fazer algo com os itens do inventário
+
+            console.log("Inventário Atualizado 111 :", inventoryItems);
+
+            eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], inventoryItems);
+        });
     }
+    
 
     // Função para interagir com a Crafting Table
     interactWithCraftingTable() {
