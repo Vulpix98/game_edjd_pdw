@@ -106,6 +106,21 @@ export const InventoryProvider = ({ children }) => {
       eventEmitter.removeListener('get-inventory', handleGetInventoryRequest);
     };
   }, [inventoryItems]);
+
+
+  // Emitir evento com a hotbar atualizado
+  useEffect(() => {
+    const handleGetHotbarRequest = (callback) => {
+      // Chama o callback com os itens da hotbar
+      callback(hotbarItems);
+    };
+  
+    eventEmitter.on('get-hotbar', handleGetHotbarRequest);
+  
+    return () => {
+      eventEmitter.removeListener('get-hotbar', handleGetHotbarRequest);
+    };
+  }, [hotbarItems]);
   
 
 

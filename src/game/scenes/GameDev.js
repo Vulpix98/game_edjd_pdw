@@ -320,12 +320,12 @@ export class GameDev extends Scene {
 
         // Emite o evento 'get-inventory' passando um callback
         eventEmitter.emit('get-inventory', (inventoryItems) => {
-            console.log('Inventário atual:', inventoryItems);
-            // Aqui você pode fazer algo com os itens do inventário
-
-            console.log("Inventário Atualizado 111 :", inventoryItems);
-
             eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], inventoryItems);
+        });
+
+        // Emite o evento 'get-hotbar' passando um callback
+        eventEmitter.emit('get-hotbar', (hotbarItems) => {
+            eventEmitter.emit('update-hotbar', [{ type: item.type, quantity: 1 }], hotbarItems);
         });
     }
     
