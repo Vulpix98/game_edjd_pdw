@@ -309,15 +309,6 @@ export class GameDev extends Scene {
         this.globalCraftingTable.y = craftingY;   
         
 
-        // eventEmitter.on('get-inventory', (updatedInventory) => {
-        //     this.inventoryItems = updatedInventory;
-        // });
-
-        // console.log("test");
-        // console.log("Inventário Atualizado 111 :", this.inventoryItems);
-        // eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], this.inventoryItems);
-    
-
         // Emite o evento 'get-inventory' passando um callback
         eventEmitter.emit('get-inventory', (inventoryItems) => {
             eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], inventoryItems);

@@ -32,7 +32,7 @@ export const InventoryProvider = ({ children }) => {
         return item && item.quantity >= input.quantity;
       });
 
-      console.log('Itens suficientes?', hasItems); // Aqui você pode adicionar a lógica do que fazer com essa informação
+      // console.log('Itens suficientes?', hasItems); // Aqui você pode adicionar a lógica do que fazer com essa informação
     };
 
     eventEmitter.on('check-has-items', handleHasItemsCheck);
@@ -56,7 +56,7 @@ export const InventoryProvider = ({ children }) => {
         .filter((item) => item.quantity > 0); // Remove itens com quantidade <= 0
 
       setInventoryItems(updatedInventory); // Atualiza o inventário
-      console.log('Inventário atualizado 222 :', updatedInventory);
+      // console.log('Inventário atualizado 222 :', updatedInventory);
     };
 
     eventEmitter.on('update-inventory', handleInventoryUpdate);
@@ -82,7 +82,7 @@ export const InventoryProvider = ({ children }) => {
       });
 
       setHotbarItems(updatedHotbar); // Atualiza a hotbar
-      console.log('Hotbar atualizada:', updatedHotbar);
+      // console.log('Hotbar atualizada:', updatedHotbar);
     };
 
     eventEmitter.on('update-hotbar', handleHotbarUpdate);
