@@ -9,6 +9,7 @@ export class GameDev extends Scene {
         // Variável para armazenar a mesa de crafting
         // uma vez que a 'craftingTable' só vai existir depois de a fazer(crafta)
         this.globalCraftingTable = null;
+
     }
 
     preload() {
@@ -137,7 +138,9 @@ export class GameDev extends Scene {
         });
 
         eventEmitter.on('slotSelected', ({ slotIndex, item }) => {
-            this.interactWithSlot(slotIndex, item)
+            if (item != null) {
+                this.interactWithSlot(slotIndex, item)            
+            }
         });
 
         // Lógica de interação com a Mesa
@@ -266,16 +269,27 @@ export class GameDev extends Scene {
     }
 
     interactWithSlot(slotIndex, item) {
-        console.log(slotIndex, item);
+        // console.log("Item recebido:", item); // Verifique sempre o valor de item
 
-        if (item) {
-            if (item.type == "crafting") {
-                this.input.keyboard.on('keydown-SPACE', () => {
+        this.input.keyboard.on('keydown-Q', () => {
+            // Verificação robusta de que 'item' não é null ou undefined
+            if (item != null && item.quantity != null ) { // item != null verifica null e undefined
+                
+                if (item.type === "crafting") {  
                     this.placeCrafting(item);
-                });
-            }
-        }
+
+                    item = null;                    
+                }                 
+            } else {
+                console.log("Item é inválido ou não tem quantity:", item); // Adiciona uma mensagem para debugar
+            } 
+        });
+
+        
     }
+    
+    
+    
 
     placeCrafting(item) {
         // Arredonda as coordenadas do jogador para o tile mais próximo na grade de 32x32
@@ -318,6 +332,7 @@ export class GameDev extends Scene {
         eventEmitter.emit('get-hotbar', (hotbarItems) => {
             eventEmitter.emit('update-hotbar', [{ type: item.type, quantity: 1 }], hotbarItems);
         });
+
     }
     
 
