@@ -5,6 +5,11 @@ import eventEmitter from '../EventEmitter';
 export class GameDev extends Scene {
     constructor() {
         super({ key: 'GameDev' });
+
+        // Variável para armazenar a mesa de crafting
+        // uma vez que a 'craftingTable' só vai existir depois de a fazer(crafta)
+        this.globalCraftingTable = null;
+
     }
 
     preload() {
@@ -18,7 +23,7 @@ export class GameDev extends Scene {
         this.load.spritesheet('player', './././public/assets/GameDev/walk.png', { frameWidth: 32, frameHeight: 32 });
     }
 
-    create() {
+    create() { 
         // Criar o mapa
         const map = this.make.tilemap({ key: 'map' });
         const tileset = map.addTilesetImage('tileset', 'tiles');
@@ -116,9 +121,11 @@ export class GameDev extends Scene {
             eventEmitter.emit('toggle-inventory');
         });
 
+        // Coletar Recursos !
         // Configurar o evento para o botão de ação (barra de espaço)
         this.input.keyboard.on('keydown-SPACE', this.collectResource, this);
 
+        // interagir com NPC
         this.input.keyboard.on('keydown-SPACE', () => {
             const distance = Phaser.Math.Distance.Between(
                 this.player.x, this.player.y,
@@ -131,8 +138,30 @@ export class GameDev extends Scene {
         });
 
         eventEmitter.on('slotSelected', ({ slotIndex, item }) => {
-            this.interactWithSlot(slotIndex, item)
+            if (item != null) {
+                this.interactWithSlot(slotIndex, item)            
+            }
         });
+
+        // Lógica de interação com a Mesa
+        this.input.keyboard.on('keydown-SPACE', () => {
+            
+            if (this.globalCraftingTable == null) {
+                this.globalCraftingTable = Object;
+                this.globalCraftingTable.x = 99999;
+                this.globalCraftingTable.y = 99999;
+            }
+
+            const distance = Phaser.Math.Distance.Between(
+                this.player.x, this.player.y,
+                this.globalCraftingTable.x, this.globalCraftingTable.y
+            );
+
+            if (distance < 50) { // Distância para interação
+                this.interactWithCraftingTable();
+            }
+        });
+        
 
         // Focar a câmera no jogador
         this.cameras.main.startFollow(this.player);
@@ -240,44 +269,78 @@ export class GameDev extends Scene {
     }
 
     interactWithSlot(slotIndex, item) {
-        console.log(slotIndex, item);
+        // console.log("Item recebido:", item); // Verifique sempre o valor de item
 
-        if (item) {
-            if (item.type == "crafting") {
-                this.input.keyboard.on('keydown-SPACE', () => {
+        this.input.keyboard.on('keydown-Q', () => {
+            // Verificação robusta de que 'item' não é null ou undefined
+            if (item != null && item.quantity != null ) { // item != null verifica null e undefined
+                
+                if (item.type === "crafting") {  
                     this.placeCrafting(item);
-                });
-            }
-        }
+
+                    item = null;                    
+                }                 
+            } else {
+                console.log("Item é inválido ou não tem quantity:", item); // Adiciona uma mensagem para debugar
+            } 
+        });
+
+        
     }
+    
+    
+    
 
     placeCrafting(item) {
         // Arredonda as coordenadas do jogador para o tile mais próximo na grade de 32x32
         const tileX = Math.floor(this.player.x / 32) * 32;
         const tileY = Math.floor(this.player.y / 32) * 32;
-    
+      
         // Define a posição relativa ao jogador (colocar a Crafting Table ao lado direito do jogador)
         let craftingX = tileX + 32;  // Move um tile para a direita
         let craftingY = tileY;
-    
+      
         // Adiciona o sprite da Crafting Table no tile ajustado
-        const craftingTable = this.add.sprite(craftingX + 16, craftingY + 16, item.type);
-        craftingTable.setOrigin(0.5); // Centraliza o sprite no tile
-        craftingTable.setDisplaySize(32, 32); // Garante que o sprite tenha 32x32 pixels
-    
+        this.globalCraftingTable = this.add.sprite(craftingX + 16, craftingY + 16, item.type);
+        this.globalCraftingTable.setOrigin(0.5); // Centraliza o sprite no tile
+        this.globalCraftingTable.setDisplaySize(32, 32); // Garante que o sprite tenha 32x32 pixels
+      
         // Ajuste da hitbox do sprite
-        craftingTable.setSize(32, 32);  // Define a hitbox para o tamanho do sprite (32x32)
-    
+        this.globalCraftingTable.setSize(32, 32);  // Define a hitbox para o tamanho do sprite (32x32)
+      
         // Habilita a física para o sprite da Crafting Table
-        this.physics.world.enable(craftingTable);
-        this.physics.add.collider(this.player, craftingTable);
-    
+        this.physics.world.enable(this.globalCraftingTable);
+        this.physics.add.collider(this.player, this.globalCraftingTable);
+      
         // Configurações de física (garantir que a Crafting Table fique fixa no lugar)
-        craftingTable.body.setImmovable(true);
-    
+        this.globalCraftingTable.body.setImmovable(true);
+      
         // Habilita a interação com o sprite da Crafting Table
-        craftingTable.setInteractive();
+        this.globalCraftingTable.setInteractive();
+      
+        // Atualiza a posição
+        this.globalCraftingTable.x = craftingX;
+        this.globalCraftingTable.y = craftingY;   
+        
+
+        // Emite o evento 'get-inventory' passando um callback
+        eventEmitter.emit('get-inventory', (inventoryItems) => {
+            eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], inventoryItems);
+        });
+
+        // Emite o evento 'get-hotbar' passando um callback
+        eventEmitter.emit('get-hotbar', (hotbarItems) => {
+            eventEmitter.emit('update-hotbar', [{ type: item.type, quantity: 1 }], hotbarItems);
+        });
+
     }
+    
+
+    // Função para interagir com a Crafting Table
+    interactWithCraftingTable() {
+        console.log("Interagindo com a mesa de crafting...");
+    }
+
     
 }
 
