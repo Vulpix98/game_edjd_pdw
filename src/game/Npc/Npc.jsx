@@ -68,7 +68,7 @@ const NPC = () => {
             {recipes.map((recipe, index) => (
                 <div key={index} className="recipe column center ">
                     <ItemList items={recipe.input} />
-                    <button  onClick={() => handleCraft(recipe)}>Craftar</button>
+                    <button className="craftB_NPC"  onClick={() => handleCraft(recipe)}>Craftar</button>
                 </div>
             ))}
         </div>
