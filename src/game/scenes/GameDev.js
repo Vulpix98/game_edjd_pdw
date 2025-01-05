@@ -113,6 +113,10 @@ export class GameDev extends Scene {
             interact: Phaser.Input.Keyboard.KeyCodes.E
         });
 
+        // display a hotbar
+        eventEmitter.emit('show-hotbar');
+        eventEmitter.emit('show-barras');
+
         // Registra o ouvinte para o evento 'toggle-inventory' na cena
         this.events.on('toggle-inventory', () => {
             toggleInventory();
