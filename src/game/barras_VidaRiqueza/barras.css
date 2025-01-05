@@ -1,11 +1,11 @@
 .barras {
     position: absolute;
-    bottom: 4rem;
+    bottom: 1rem;
+    left: 1rem;
     
     /* colocar as duas barras (vida e riqueza) em linha  */
     display: inline-flex; 
 
-    margin: 1rem;
     gap: 1rem;
 }
 
