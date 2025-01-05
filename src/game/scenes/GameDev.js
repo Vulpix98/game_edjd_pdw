@@ -8,7 +8,9 @@ export class GameDev extends Scene {
 
         // Variável para armazenar a mesa de crafting
         // uma vez que a 'craftingTable' só vai existir depois de a fazer(crafta)
-        this.globalCraftingTable = null;
+        this.globalCraftingTable = Object;
+        this.globalCraftingTable.x = 99999;
+        this.globalCraftingTable.y = 99999;        
 
     }
 
@@ -146,11 +148,11 @@ export class GameDev extends Scene {
         // Lógica de interação com a Mesa
         this.input.keyboard.on('keydown-SPACE', () => {
             
-            if (this.globalCraftingTable == null) {
-                this.globalCraftingTable = Object;
-                this.globalCraftingTable.x = 99999;
-                this.globalCraftingTable.y = 99999;
-            }
+            // if (this.globalCraftingTable == null) {
+            //     this.globalCraftingTable = Object;
+            //     this.globalCraftingTable.x = 99999;
+            //     this.globalCraftingTable.y = 99999;
+            // }
 
             const distance = Phaser.Math.Distance.Between(
                 this.player.x, this.player.y,
@@ -186,6 +188,7 @@ export class GameDev extends Scene {
         }
 
         this.checkNPCDistance();
+        this.checkCraftingTableDistance();
     }
 
     collectResource() {
@@ -335,10 +338,21 @@ export class GameDev extends Scene {
 
     }
     
+    checkCraftingTableDistance() {
+        const distance = Phaser.Math.Distance.Between(
+            this.player.x, this.player.y,
+            this.globalCraftingTable.x, this.globalCraftingTable.y
+        );
+
+        if (distance > 100) { // Distância para interação
+            eventEmitter.emit('craftingTable-close');
+        }
+    }
 
     // Função para interagir com a Crafting Table
     interactWithCraftingTable() {
         console.log("Interagindo com a mesa de crafting...");
+        eventEmitter.emit('craftingTable-interaction');
     }
 
     

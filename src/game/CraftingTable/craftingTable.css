@@ -1,0 +1,84 @@
+:root {
+    --castanho-6: rgb(60, 25, 30);
+    --castanho-5: rgb(120, 60, 55);
+    --castanho-4: rgb(200, 120, 75);
+    --castanho-3: rgb(245, 180, 130);
+}
+.centro {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    background-image: url("../../../public/assets/Textures/crafting.png");
+    background-size: 100% 133%;
+    background-position: center;
+}
+
+.UI {
+
+
+    display: flex;
+    align-items: center;
+
+    padding: 2rem;
+}
+
+.craftingTable {
+    padding: 1rem;
+}
+
+.craftingTable th {
+    height: 3rem;
+    width: 3rem;
+
+    border: 3px solid var(--castanho-4);
+    background-color: var(--castanho-3);
+}
+
+.seta {
+    height: 3rem;
+    width: 3rem;
+
+    background-color: var(--castanho-4);
+    opacity: 80%;
+    
+    clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
+
+    margin: 1rem;
+}
+
+.resultado {
+    border: 3px solid var(--castanho-4);
+    background-color: var(--castanho-3);
+
+    height: 3rem;
+    width: 3rem;
+}
+
+.craftB_table {
+    margin-left: 50%;
+    margin-bottom: 1rem;
+
+    transform: translateX(-50%);
+
+    border: 3px solid var(--castanho-4);
+    background-color: var(--castanho-3);
+
+    padding: 0.5rem 1rem;
+
+    color: var(--castanho-5);
+    font-weight: bold;
+
+    transition: 250ms;
+}
+
+.craftB_table:hover {
+    cursor: pointer;
+
+    background-color: var(--castanho-4);
+
+    color: var(--castanho-6);
+
+    transition: 250ms;
+}
