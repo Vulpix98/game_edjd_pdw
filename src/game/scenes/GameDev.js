@@ -383,7 +383,7 @@ export class GameDev extends Scene {
 
     interactWithNPC(npc) {
         // Função para lidar com a interação com o NPC
-        console.log(`Interagindo com o NPC! Tipo: ${npc.getData('type')}`);
+        // console.log(`Interagindo com o NPC! Tipo: ${npc.getData('type')}`);
         eventEmitter.emit('npc-interaction', { type: npc.getData('type'), message: 'Olá, jogador! Eu sou um NPC.' });
     }
 
