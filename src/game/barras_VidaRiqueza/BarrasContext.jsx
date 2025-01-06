@@ -25,8 +25,6 @@ export const BarrasProvider = ({ children }) => {
       }));
     };
 
-    console.log("test");
-
     eventEmitter.on('change-life', handleChangeLife);
     eventEmitter.on('change-wealth', handleChangeWealth);
 
