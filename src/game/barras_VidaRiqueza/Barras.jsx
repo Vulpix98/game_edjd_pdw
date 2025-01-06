@@ -28,8 +28,8 @@ const Barras = () => {
       className="barras"
       style={{ display: isBarrasVisible ? 'inline-flex' : 'none' }} // Exibe as barras se isBarrasVisible for true
     >
-                  <div className="bVida" style={{'--vida-height': `${barrasState.vidaHeight}px`, /* Usando variável CSS*/ }}></div>
-                  <div className="bRiqueza" style={{'--riqueza-height': `${barrasState.riquezaHeight}px`, /* Usando variável CSS*/ }}></div>
+      <div className="bVida" style={{'--vida-height': `${barrasState.vidaHeight}px`, /* Usando variável CSS*/ }}></div>
+      <div className="bRiqueza" style={{'--riqueza-height': `${barrasState.riquezaHeight}px`, /* Usando variável CSS*/ }}></div>
     </div>
   );
 };

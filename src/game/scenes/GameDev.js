@@ -149,7 +149,7 @@ export class GameDev extends Scene {
 
 
         // Criar o NPC com hitbox
-        this.npc = this.add.rectangle(1300, 1250, 64, 64, 0x00ff00, 0); // 0x00ff00 é a cor da hitbox (verde), 0 é a transparência
+        this.npc = this.add.rectangle(1082, 1054, 48, 64, 0x00ff00, 0); // 0x00ff00 é a cor da hitbox (verde), 0 é a transparência
         this.physics.add.existing(this.npc, true);  // Adiciona a física, 'true' para tornar o retângulo imutável
 
         // Definir os dados do NPC, como o tipo 'npc'
