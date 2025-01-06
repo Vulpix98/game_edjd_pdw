@@ -130,12 +130,33 @@ export class GameDev extends Scene {
         });
 
 
+        /*
+        
+        
+        RESOLVER
+        ESTA MERDA
+        DO 
+        NPC
+
+
+        METER 
+        NA MAQUINA
+        
+        */
+
+
+
+
+
         // Criar o NPC com hitbox
-        this.npc = this.physics.add.sprite(1300, 1250, 'player');
-        this.npc.body.setSize(16, 16).setOffset(8, 16);
-        this.npc.setImmovable(true);
-        this.npc.setInteractive();
+        this.npc = this.add.rectangle(1300, 1250, 64, 64, 0x00ff00, 0); // 0x00ff00 é a cor da hitbox (verde), 0 é a transparência
+        this.physics.add.existing(this.npc, true);  // Adiciona a física, 'true' para tornar o retângulo imutável
+
+        // Definir os dados do NPC, como o tipo 'npc'
         this.npc.setData('type', 'npc');
+
+        // Tornar a hitbox interativa, se necessário (por exemplo, para cliques ou eventos de entrada)
+        this.npc.setInteractive();
 
         // Adicionar colisão entre jogador e NPC
         this.physics.add.collider(this.player, this.npc);
@@ -288,6 +309,9 @@ export class GameDev extends Scene {
             this.player.anims.stop();
             this.player.setFrame(1); // Fica na primeira imagem quando parado
         }
+
+        this.checkCraftingTableDistance();
+        this.checkNPCDistance();
     }
 
     collectResource() {
