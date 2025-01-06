@@ -13,6 +13,10 @@ export class GameDev extends Scene {
         this.load.image('tiles', '/assets/GameDev/tileset.png');
         this.load.image('trees', '/assets/GameDev/trees.png');
         this.load.image('rocks', '/assets/GameDev/rocks.png');
+        this.load.image('clouds', '/assets/GameDev/clouds.png');
+        this.load.image('buildings', '/assets/GameDev/nuclear_reactor.png');
+        this.load.image('reactorExplode', '/assets/GameDev/reactor_explode.png');
+        this.load.image('city', '/assets/GameDev/city.png');
         // Carregar o sprite do jogador
         this.load.image('crafting', './././public/assets/Textures/crafting.png');
         this.load.spritesheet('player', './././public/assets/GameDev/walk.png', { frameWidth: 32, frameHeight: 32 });
@@ -21,14 +25,26 @@ export class GameDev extends Scene {
     create() {
         // Criar o mapa
         const map = this.make.tilemap({ key: 'map' });
+
         const tileset = map.addTilesetImage('tileset', 'tiles');
         const trees = map.addTilesetImage('trees', 'trees');
         const rocks = map.addTilesetImage('rocks', 'rocks');
+
+        const clouds = map.addTilesetImage('clouds', 'clouds');
+        const buildings = map.addTilesetImage('nuclear_reactor', 'buildings');
+        const reactorExplode = map.addTilesetImage('reactor_explode', 'reactorExplode');
+        const city = map.addTilesetImage('city', 'city');
 
         // Criar e armazenar as camadas
         this.backgroundLayer = map.createLayer('Background', tileset, 0, 0);
         this.treeLayer = map.createLayer('Tree', trees, 0, 0);
         this.rockLayer = map.createLayer('Rock', rocks, 0, 0);
+
+        const layer2 = map.createLayer('Clouds', clouds, 0, 0);
+        const layer5 = map.createLayer('Buildings', buildings, 0, 0);
+        const layer6 = map.createLayer('ReactorExplode', reactorExplode, 0, 0);
+        const layer7 = map.createLayer('City', city, 0, 0);
+        const layer8 = map.createLayer('DetailCity', city, 0, 0);
 
         // Organizar as camadas
         this.backgroundLayer.setDepth(0);
@@ -38,7 +54,6 @@ export class GameDev extends Scene {
         // Obter as camadas de hitboxes
         const treeHitboxLayer = map.getObjectLayer('Tree_Hitbox');
         const rockHitboxLayer = map.getObjectLayer('Rock_Hitbox');
-        
         // Armazenar todas as hitboxes de recursos
         this.resources = [];
 
@@ -55,7 +70,7 @@ export class GameDev extends Scene {
             hitbox.setData('tileX', map.worldToTileX(obj.x)); // Coordenadas do tile
             hitbox.setData('tileY', map.worldToTileY(obj.y));
             this.resources.push(hitbox);
-            hitbox.setFillStyle(0x00ff00, 0.3); // Cor verde semitransparente
+            //hitbox.setFillStyle(0x00ff00, 0.3); // Cor verde semitransparente
         });
 
         // Criar hitboxes para cada pedra
@@ -71,7 +86,7 @@ export class GameDev extends Scene {
             hitbox.setData('tileX', map.worldToTileX(obj.x)); // Coordenadas do tile
             hitbox.setData('tileY', map.worldToTileY(obj.y));
             this.resources.push(hitbox);
-            hitbox.setFillStyle(0xff0000, 0.3); // Cor vermelha semitransparente
+            //hitbox.setFillStyle(0xff0000, 0.3); // Cor vermelha semitransparente
         });
 
         // Criar o jogador com hitbox
@@ -134,12 +149,46 @@ export class GameDev extends Scene {
             this.interactWithSlot(slotIndex, item)
         });
 
+        // Criar a camada de borda
+        const BordaRight = map.getObjectLayer('BordaRight');
+        const BordaLeft = map.getObjectLayer('BordaLeft');
+        const BordaTop = map.getObjectLayer('BordaTop');
+        const BordaBottom = map.getObjectLayer('BordaBottom');
+
+        // Função para criar hitboxes
+        function criarBordaHitbox(x, y, largura, altura) {
+            const bordaHitbox = this.add.zone(x, y);
+            bordaHitbox.setSize(largura, altura);
+            this.physics.world.enable(bordaHitbox);
+            bordaHitbox.body.setImmovable(true);
+            return bordaHitbox;
+        }
+
+        // Função para adicionar colisões com as bordas
+        function adicionarColisaoBorda(bordaLayer) {
+            if (bordaLayer && bordaLayer.objects) {
+                bordaLayer.objects.forEach(obj => {
+                    // Verifique se o objeto tem as propriedades necessárias (como x, y, width e height)
+                    if (obj.x !== undefined && obj.y !== undefined && obj.width !== undefined && obj.height !== undefined) {
+                        const bordaHitbox = criarBordaHitbox.call(this, obj.x + obj.width / 2, obj.y + obj.height / 2, obj.width, obj.height);
+                        this.physics.add.collider(this.player, bordaHitbox);
+                    }
+                });
+            }
+        }
+
+        // Adicionar colisões para cada camada de borda, se existir
+        adicionarColisaoBorda.call(this, BordaRight);
+        adicionarColisaoBorda.call(this, BordaLeft);
+        adicionarColisaoBorda.call(this, BordaTop);
+        adicionarColisaoBorda.call(this, BordaBottom);
+
         // Focar a câmera no jogador
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setZoom(1);
+        this.cameras.main.setZoom(2);
 
         // Para debug: exibir as hitboxes
-        this.physics.world.drawDebug = true;
+        //this.physics.world.drawDebug = true;
     }
 
     update() {

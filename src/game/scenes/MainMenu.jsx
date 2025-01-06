@@ -22,7 +22,7 @@ const MainMenu = () => {
         physics: {
             default: 'arcade',
             arcade: {
-                debug: true
+                debug: false
             }
         },
         pixelArt: true
