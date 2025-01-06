@@ -85,6 +85,36 @@ export class GameDev extends Scene {
         this.player = this.physics.add.sprite(1216, 1250, 'player');
         this.player.body.setSize(16, 16).setOffset(8, 16);
 
+          // Adicionar animações para o jogador (Cada linha tem animações separadas)
+          this.anims.create({
+            key: 'walk-down',
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'walk-up',
+            frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'walk-right',
+            frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'walk-left',
+            frames: this.anims.generateFrameNumbers('player', { start: 12, end: 15 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+
         // Criar o NPC com hitbox
         this.npc = this.physics.add.sprite(1300, 1250, 'player');
         this.npc.body.setSize(16, 16).setOffset(8, 16);
@@ -178,21 +208,37 @@ export class GameDev extends Scene {
     }
 
     update() {
-        // Controle de movimento do jogador
         this.player.setVelocity(0);
+        
+        let isMoving = false;
+
+        // Movimentação horizontal
         if (this.cursors.left.isDown || this.keys.left.isDown) {
             this.player.setVelocityX(-100);
+            isMoving = true;
+            this.player.anims.play('walk-left', true); // Caminho para a esquerda
         } else if (this.cursors.right.isDown || this.keys.right.isDown) {
             this.player.setVelocityX(100);
+            isMoving = true;
+            this.player.anims.play('walk-right', true); // Caminho para a direita
         }
+        
+        // Movimentação vertical
         if (this.cursors.up.isDown || this.keys.up.isDown) {
             this.player.setVelocityY(-100);
+            isMoving = true;
+            this.player.anims.play('walk-up', true); // Caminho para cima
         } else if (this.cursors.down.isDown || this.keys.down.isDown) {
             this.player.setVelocityY(100);
+            isMoving = true;
+            this.player.anims.play('walk-down', true); // Caminho para baixo
         }
 
-        this.checkNPCDistance();
-        this.checkCraftingTableDistance();
+        // Se o jogador não estiver se movendo, para a animação
+        if (!isMoving) {
+            this.player.anims.stop();
+            this.player.setFrame(1); // Fica na primeira imagem quando parado
+        }
     }
 
     collectResource() {
