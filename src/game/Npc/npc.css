@@ -50,14 +50,37 @@
 #close {
     position: absolute;
     top: 5%;
-    right: 7%;
+    right: 8%;
+
+    color: var(--castanho-5);
+    font-weight: bold;
 
     cursor: pointer;
 
 }
 
 
+.craftB_NPC {
+    border: 3px solid var(--castanho-4);
+    background-color: var(--castanho-3);
 
+    padding: 0.5rem 1rem;
+
+    color: var(--castanho-5);
+    font-weight: bold;
+
+    transition: 250ms;
+}
+
+.craftB_NPC:hover {
+    cursor: pointer;
+
+    background-color: var(--castanho-4);
+
+    color: var(--castanho-6);
+
+    transition: 250ms;
+}
 
 /* test */
 /* .npc,

@@ -1,4 +1,3 @@
-// Inventory.jsx
 import React, { useContext, useEffect, useState } from 'react';
 import InventoryContext from './InventoryContext';
 import ItemList from '../Items/ItemList';

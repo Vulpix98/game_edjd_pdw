@@ -1,11 +1,13 @@
 // Hotbar.jsx
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import HotbarContext from './HotbarContext';
 import Item from '../Items/Item';
 import '../../../public/hotbar.css';
+import eventEmitter from '../EventEmitter'; // Supondo que você tenha um EventEmitter
 
 const Hotbar = () => {
   const { hotbarItems, addItemToHotbar, selectedSlot, selectSlot } = useContext(HotbarContext); // Consome o estado da hotbar do contexto
+  const [isHotbarVisible, setIsHotbarVisible] = useState(false); // Inicialmente a hotbar está oculta (display: none)
 
   const handleDrop = (index, item) => {
     addItemToHotbar(item, index); // Atualiza o estado da hotbar no contexto
@@ -29,9 +31,27 @@ const Hotbar = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectSlot]);
-  
+
+  useEffect(() => {
+    // Ouvir o evento para mostrar a hotbar
+    const handleShowHotbar = () => {
+      setIsHotbarVisible(true); // Torna a hotbar visível
+    };
+
+    // Registrar evento para mostrar a hotbar
+    eventEmitter.on('show-hotbar', handleShowHotbar);
+
+    // Limpar o evento ao desmontar
+    return () => {
+      eventEmitter.removeListener('show-hotbar', handleShowHotbar);
+    };
+  }, []);
+
   return (
-    <div className="hotbar">
+    <div
+      className="hotbar"
+      style={{ display: isHotbarVisible ? 'flex' : 'none' }} // Exibe a hotbar se isHotbarVisible for true
+    >
       {hotbarItems.map((slot, index) => (
         <div
           key={index}

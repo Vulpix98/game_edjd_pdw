@@ -8,6 +8,7 @@ import Hotbar from './game/Hotbar/Hotbar';
 import Barras from './game/barras_VidaRiqueza/Barras';
 import NPC from './game/Npc/Npc';
 import MainMenu from './game/scenes/MainMenu';
+import CraftingTable from './game/CraftingTable/CraftingTable';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Barras />
           <MainMenu />
           <NPC />
+          <CraftingTable />
         </BarrasProvider>
       </InventoryProvider>
     </HotbarProvider>
