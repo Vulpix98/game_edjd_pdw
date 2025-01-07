@@ -5,7 +5,7 @@ import { useCraftingTable } from './CraftingTableContext';
 import eventEmitter from '../EventEmitter';
 
 const CraftingTable = () => {
-    const { matrix, setMatrix, craftItem, addItemToInventory, inventory } = useCraftingTable();
+    const { matrix, setMatrix, craftItem } = useCraftingTable();
     const [isCraftingTable, setIsCraftingTableVisible] = useState(false);
     const [draggedItem, setDraggedItem] = useState(null);
     const [images, setImages] = useState({}); // Armazenar imagens associadas aos slots
@@ -42,28 +42,27 @@ const CraftingTable = () => {
     // Lidar com drag and drop
     const handleDragStart = (item) => {
         setDraggedItem(item);  // Atualiza o estado do item arrastado
-        console.log('Item arrastado:', item); // Log do item arrastado
     };
 
     const handleDrop = (row, col, e) => {
+        // Obtém os dados do item arrastado
         const itemData = e.dataTransfer.getData('application/json');
         const item = JSON.parse(itemData);
-
-        console.log('Item solto:', item);
-
+    
         if (item) {
+            // Atualiza a matriz com o item na posição correta
             const newMatrix = [...matrix];
             newMatrix[row][col] = { type: item.type, quantity: item.quantity };  // Garantir que slot seja um objeto
             setMatrix(newMatrix);
-
+    
+            // Atualiza as imagens associadas ao item (texturas)
             setImages((prevImages) => ({
                 ...prevImages,
-                [`${row}-${col}`]: item.type, // Usar o tipo de item para associar a textura
+                [`${row}-${col}`]: item.type, // Usa o tipo de item para associar a textura
             }));
-
+    
+            // Limpa o item arrastado
             setDraggedItem(null);
-        } else {
-            console.log('Nenhum item foi arrastado para soltar');
         }
     };
 
@@ -72,12 +71,9 @@ const CraftingTable = () => {
     };
 
     const handleSlotClick = (row, col) => {
-        console.log(`Slot clicado na linha ${row}, coluna ${col}`); // Log de qual slot foi clicado
 
         const newMatrix = [...matrix];
-        if (!newMatrix[row][col]) {
-            newMatrix[row][col] = { type: 'wood', quantity: 1 }; // Substitua por lógica real do inventário
-        } else {
+        if (newMatrix[row][col]) {
             newMatrix[row][col] = null;
         }
         setMatrix(newMatrix);
@@ -86,7 +82,6 @@ const CraftingTable = () => {
         setImages((prevImages) => {
             const updatedImages = { ...prevImages };
             delete updatedImages[`${row}-${col}`];
-            console.log('Imagens após clique para limpar:', updatedImages); // Log das imagens após limpar
             return updatedImages;
         });
     };
@@ -95,6 +90,7 @@ const CraftingTable = () => {
         const result = craftItem();
         if (result) {
             alert(`Item criado: ${result}`);
+            // Agora, o item craftado será adicionado ao inventário automaticamente pela função addItemToInventory no contexto
         } else {
             alert('Nenhuma combinação válida!');
         }
