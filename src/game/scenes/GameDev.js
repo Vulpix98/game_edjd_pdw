@@ -130,24 +130,6 @@ export class GameDev extends Scene {
         });
 
 
-        /*
-        
-        
-        RESOLVER
-        ESTA MERDA
-        DO 
-        NPC
-
-
-        METER 
-        NA MAQUINA
-        
-        */
-
-
-
-
-
         // Criar o NPC com hitbox
         this.npc = this.add.rectangle(1082, 1054, 48, 64, 0x00ff00, 0); // 0x00ff00 é a cor da hitbox (verde), 0 é a transparência
         this.physics.add.existing(this.npc, true);  // Adiciona a física, 'true' para tornar o retângulo imutável
@@ -216,13 +198,7 @@ export class GameDev extends Scene {
         });
 
         // Lógica de interação com a Mesa
-        this.input.keyboard.on('keydown-SPACE', () => {
-            
-            // if (this.globalCraftingTable == null) {
-            //     this.globalCraftingTable = Object;
-            //     this.globalCraftingTable.x = 99999;
-            //     this.globalCraftingTable.y = 99999;
-            // }
+        this.input.keyboard.on('keydown-SPACE', () => { 
 
             const distance = Phaser.Math.Distance.Between(
                 this.player.x, this.player.y,
@@ -414,9 +390,6 @@ export class GameDev extends Scene {
         
     }
     
-    
-    
-
     placeCrafting(item) {
         // Arredonda as coordenadas do jogador para o tile mais próximo na grade de 32x32
         const tileX = Math.floor(this.player.x / 32) * 32;
@@ -444,21 +417,19 @@ export class GameDev extends Scene {
         // Habilita a interação com o sprite da Crafting Table
         this.globalCraftingTable.setInteractive();
       
-        // Atualiza a posição
-        this.globalCraftingTable.x = craftingX;
-        this.globalCraftingTable.y = craftingY;   
-        
-
+        // Atualiza a posição do sprite (isso já deve estar no centro do tile com a origem configurada)
+        this.globalCraftingTable.x = craftingX + 16;  // Ajuste da posição X para o centro do tile
+        this.globalCraftingTable.y = craftingY + 16;  // Ajuste da posição Y para o centro do tile  
+    
         // Emite o evento 'get-inventory' passando um callback
         eventEmitter.emit('get-inventory', (inventoryItems) => {
             eventEmitter.emit('update-inventory', [{ type: item.type, quantity: 1 }], inventoryItems);
         });
-
+    
         // Emite o evento 'get-hotbar' passando um callback
         eventEmitter.emit('get-hotbar', (hotbarItems) => {
             eventEmitter.emit('update-hotbar', [{ type: item.type, quantity: 1 }], hotbarItems);
         });
-
     }
     
     checkCraftingTableDistance() {
