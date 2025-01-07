@@ -3,6 +3,7 @@ import React from 'react';
 import { HotbarProvider } from './game/Hotbar/HotbarContext';
 import { InventoryProvider } from './game/Inventory/InventoryContext';
 import { BarrasProvider } from './game/barras_VidaRiqueza/BarrasContext';
+import { CraftingTableProvider } from './game/CraftingTable/CraftingTableContext';
 import Inventory from './game/Inventory/Inventory';
 import Hotbar from './game/Hotbar/Hotbar';
 import Barras from './game/barras_VidaRiqueza/Barras';
@@ -15,12 +16,14 @@ function App() {
     <HotbarProvider>
       <InventoryProvider>
         <BarrasProvider>
-          <Inventory />
-          <Hotbar />
-          <Barras />
-          <MainMenu />
-          <NPC />
-          <CraftingTable />
+          <CraftingTableProvider>
+            <Inventory />
+            <Hotbar />
+            <Barras />
+            <MainMenu />
+            <NPC />
+            <CraftingTable />
+          </CraftingTableProvider>
         </BarrasProvider>
       </InventoryProvider>
     </HotbarProvider>

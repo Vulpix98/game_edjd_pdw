@@ -70,7 +70,7 @@ const Hotbar = () => {
             <div className="hotbar-item">
               <Item
                 item={slot}
-                draggable={false} // Na hotbar, não queremos arrastar itens de volta
+                draggable={true} // Na hotbar, não queremos arrastar itens de volta
                 onDragStart={() => {}} // Desabilitamos para evitar erros
                 onDrop={() => {}}
               />
