@@ -24,23 +24,6 @@ export const InventoryProvider = ({ children }) => {
     });
   };
 
-  // Escutando o evento check-has-items  -> 1º
-  useEffect(() => {
-    const handleHasItemsCheck = (inputItems, inventoryItems) => {
-      const hasItems = inputItems.every((input) => {
-        const item = inventoryItems.find((i) => i.type === input.type);
-        return item && item.quantity >= input.quantity;
-      });
-
-      // console.log('Itens suficientes?', hasItems); // Aqui você pode adicionar a lógica do que fazer com essa informação
-    };
-
-    eventEmitter.on('check-has-items', handleHasItemsCheck);
-
-    return () => {
-      eventEmitter.removeListener('check-has-items', handleHasItemsCheck);
-    };
-  }, []);
 
   // Escutando o evento update-inventory  -> 2º
   useEffect(() => {
@@ -126,8 +109,14 @@ export const InventoryProvider = ({ children }) => {
 
 
   const craftWithNPC = (inputItems, outputItem) => {
-    // Emitir evento de verificação dos itens (1º evento)
-    eventEmitter.emit('check-has-items', inputItems, inventoryItems);
+    const hasItems = inputItems.every((input) => {
+      const item = inventoryItems.find((i) => i.type === input.type);
+      return item && item.quantity >= input.quantity;
+    });
+  
+    if (!hasItems) {
+      return false;
+    }
 
     // Emitir evento de atualização do inventário (2º evento)
     eventEmitter.emit('update-inventory', inputItems, inventoryItems, setInventoryItems);
