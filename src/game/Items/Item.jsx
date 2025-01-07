@@ -6,7 +6,8 @@ const Item = ({ item, onDragStart, draggable = false }) => {
     wood: '../../../public/assets/Textures/tree.png',
     stone: '../../../public/assets/Textures/rock.png',
     crafting: '../../../public/assets/Textures/crafting.png',
-    stone_pickaxe: '../../../public/assets/Textures/crafting.png',
+    stone_pickaxe: '../../../public/assets/Textures/stone_pickaxe.png',
+    stone_axe: '../../../public/assets/Textures/stone_axe.png',
   };
 
   // Lógica para arrastar o item

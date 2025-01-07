@@ -1,19 +1,20 @@
-// CraftingTableContext.jsx
 import React, { createContext, useState, useContext } from 'react';
+import { useInventory } from '../Inventory/InventoryContext';  // Importa o contexto de inventário
+import eventEmitter from '../EventEmitter';
 
-// Contexto
 const CraftingTableContext = createContext();
 
-// Provedor
 export const CraftingTableProvider = ({ children }) => {
     const [matrix, setMatrix] = useState(Array(3).fill().map(() => Array(3).fill(null))); // Matriz 3x3 vazia
-    const [inventory, setInventory] = useState(['wood', 'stone']); // Exemplo de inventário com itens reais
+    const { addItemToInventory } = useInventory();  // Acessa a função para adicionar item ao inventário
 
     // Lógica para verificar combinações de itens reais
     const checkCombination = () => {
-        const combinationKey = matrix.flat().join('-'); // Exemplo: 'wood-stone-iron-null-null...'
+        const combinationKey = matrix.flat().map(item => item ? item.type : 'null').join('-'); // Cria a chave da combinação
+
         const recipes = {
             'stone-stone-stone-null-wood-null-null-wood-null': 'stone_pickaxe', // Exemplo de receita
+            'stone-stone-null-stone-wood-null-null-wood-null': 'stone_axe',
         };
 
         if (recipes[combinationKey]) {
@@ -27,22 +28,19 @@ export const CraftingTableProvider = ({ children }) => {
         const result = checkCombination();
         if (result) {
             setMatrix(Array(3).fill().map(() => Array(3).fill(null))); // Limpa a matriz após craftar
+            addItemToInventory({ type: result, quantity: 1 }); // Adiciona o item criado ao inventário
+            eventEmitter.emit('change-wealth', { amount: 5 }); 
+            eventEmitter.emit('change-life', { amount: -5 });
             return result; // Retorna o item criado
         }
-        return null;
-    };
-
-    // Função para adicionar item ao inventário
-    const addItemToInventory = (item) => {
-        setInventory((prev) => [...prev, item]); // Adiciona um item no inventário
+        return null; // Retorna null caso não haja combinação válida
     };
 
     return (
-        <CraftingTableContext.Provider value={{ matrix, setMatrix, inventory, setInventory, addItemToInventory, craftItem }}>
+        <CraftingTableContext.Provider value={{ matrix, setMatrix, craftItem }}>
             {children}
         </CraftingTableContext.Provider>
     );
 };
 
-// Hook para usar o contexto
 export const useCraftingTable = () => useContext(CraftingTableContext);
