@@ -1,10 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import "./craftingTable.css";
+import React, { useEffect, useState } from 'react';
+import './craftingTable.css';
+import Item from '../Items/Item';  // Importando o componente Item
+import { useCraftingTable } from './CraftingTableContext';
 import eventEmitter from '../EventEmitter';
 
 const CraftingTable = () => {
+    const { matrix, setMatrix, craftItem, addItemToInventory, inventory } = useCraftingTable();
     const [isCraftingTable, setIsCraftingTableVisible] = useState(false);
+    const [draggedItem, setDraggedItem] = useState(null);
+    const [images, setImages] = useState({}); // Armazenar imagens associadas aos slots
 
+    // Gerenciar a visibilidade da crafting table com eventos
     useEffect(() => {
         const handleInteraction = () => {
             setIsCraftingTableVisible(true);
@@ -14,7 +20,7 @@ const CraftingTable = () => {
 
         return () => {
             eventEmitter.removeListener('craftingTable-interaction', handleInteraction);
-        }
+        };
     }, []);
 
     useEffect(() => {
@@ -26,41 +32,113 @@ const CraftingTable = () => {
 
         return () => {
             eventEmitter.removeListener('craftingTable-close', handleClose);
-        }
+        };
     }, []);
 
     if (!isCraftingTable) {
         return null;
     }
 
+    // Lidar com drag and drop
+    const handleDragStart = (item) => {
+        setDraggedItem(item);  // Atualiza o estado do item arrastado
+        console.log('Item arrastado:', item); // Log do item arrastado
+    };
+
+    const handleDrop = (row, col, e) => {
+        const itemData = e.dataTransfer.getData('application/json');
+        const item = JSON.parse(itemData);
+
+        console.log('Item solto:', item);
+
+        if (item) {
+            const newMatrix = [...matrix];
+            newMatrix[row][col] = { type: item.type, quantity: item.quantity };  // Garantir que slot seja um objeto
+            setMatrix(newMatrix);
+
+            setImages((prevImages) => ({
+                ...prevImages,
+                [`${row}-${col}`]: item.type, // Usar o tipo de item para associar a textura
+            }));
+
+            setDraggedItem(null);
+        } else {
+            console.log('Nenhum item foi arrastado para soltar');
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();  // Permite o drop
+    };
+
+    const handleSlotClick = (row, col) => {
+        console.log(`Slot clicado na linha ${row}, coluna ${col}`); // Log de qual slot foi clicado
+
+        const newMatrix = [...matrix];
+        if (!newMatrix[row][col]) {
+            newMatrix[row][col] = { type: 'wood', quantity: 1 }; // Substitua por lógica real do inventário
+        } else {
+            newMatrix[row][col] = null;
+        }
+        setMatrix(newMatrix);
+
+        // Limpa a imagem associada ao slot ao clicar
+        setImages((prevImages) => {
+            const updatedImages = { ...prevImages };
+            delete updatedImages[`${row}-${col}`];
+            console.log('Imagens após clique para limpar:', updatedImages); // Log das imagens após limpar
+            return updatedImages;
+        });
+    };
+
+    const handleCraft = () => {
+        const result = craftItem();
+        if (result) {
+            alert(`Item criado: ${result}`);
+        } else {
+            alert('Nenhuma combinação válida!');
+        }
+    };
+
     return (
         <div className="centro">
             <div className="UI">
                 <table className="craftingTable">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>                
+                    <tbody>
+                        {matrix.map((row, rowIndex) => (
+                            <tr key={rowIndex}>
+                                {row.map((slot, colIndex) => (
+                                    <th
+                                        key={colIndex}
+                                        className="slot"
+                                        onDragOver={handleDragOver}
+                                        onDrop={(e) => handleDrop(rowIndex, colIndex, e)}  // Passando o evento corretamente
+                                        onClick={() => handleSlotClick(rowIndex, colIndex)}
+                                    >
+                                        {slot ? (
+                                            <div className="item">
+                                                {/* Renderizando o componente Item, passando a textura e as propriedades do item */}
+                                                <Item
+                                                    item={slot}  // Passando o objeto item, que contém o tipo e a quantidade
+                                                    draggable={true}
+                                                    onDragStart={handleDragStart}
+                                                />
+                                            </div>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
                 <div className="seta"></div>
                 <div className="resultado"></div>
             </div>
-            <button className="craftB_table">Craftar</button>
+            <button className="craftB_table" onClick={handleCraft}>Craftar</button>
         </div>
-    )
+    );
 };
 
 export default CraftingTable;
