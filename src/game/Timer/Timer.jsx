@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import eventEmitter from '../EventEmitter';
 
 function Timer() {
-    const [timeRemaining, setTimeRemaining] = useState(5); // 5 minutos em segundos (300 segundos)
+    const [timeRemaining, setTimeRemaining] = useState(300); // 5 minutos em segundos (300 segundos)
     const [isTimerVisible, setIsTimerVisible] = useState(false);
 
     useEffect(() => {
