@@ -164,6 +164,10 @@ export class GameDev extends Scene {
         // display a hotbar
         eventEmitter.emit('show-hotbar');
         eventEmitter.emit('show-barras');
+        eventEmitter.emit('show-timer');
+        eventEmitter.on('timer-ended', () => {
+            this.scene.start('GameOver'); // Trocar para a cena GameOver
+        });
 
         // Registra o ouvinte para o evento 'toggle-inventory' na cena
         this.events.on('toggle-inventory', () => {

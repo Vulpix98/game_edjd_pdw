@@ -10,6 +10,7 @@ import Barras from './game/barras_VidaRiqueza/Barras';
 import NPC from './game/Npc/Npc';
 import MainMenu from './game/scenes/MainMenu';
 import CraftingTable from './game/CraftingTable/CraftingTable';
+import Timer from './game/Timer/Timer';  // Importando o componente Timer
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <MainMenu />
             <NPC />
             <CraftingTable />
+            <Timer />
           </CraftingTableProvider>
         </BarrasProvider>
       </InventoryProvider>
