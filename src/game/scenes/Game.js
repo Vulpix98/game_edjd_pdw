@@ -16,6 +16,7 @@ export class Cutscene extends Scene {
         this.load.image('buildings', '/assets/GameDev/nuclear_reactor.png');
         this.load.image('reactorExplode', '/assets/GameDev/reactor_explode.png');
         this.load.image('city', '/assets/GameDev/city.png');
+        this.load.image('title','/assets/GameDev/title.png');
     }
 
     create() {
@@ -69,8 +70,31 @@ export class Cutscene extends Scene {
             ease: 'Linear',
             onComplete: () => {
                 console.log("ola");
+    
+                // Adicionar a imagem do título no centro da tela
+                const titleImage = this.add.image(
+                    this.cameras.main.centerX, 
+                    this.cameras.main.centerY - 100, // Ajuste a posição Y conforme necessário
+                    'title'
+                ).setOrigin(0.5); // Centralizar a imagem
+            
                 // Chamar a função para mostrar o texto após a câmera parar
-                this.showCenteredText(["Bem-vindo à aventura!", "Prepare-se para a missão...", "Boa sorte!"]);
+                this.showCenteredText([
+                    "Bem-vindo à aventura!", 
+                    "Prepare-se para a missão...", 
+                    "Boa sorte!"
+                ]);
+            
+                // Opcional: Adicionar um efeito de desaparecimento para o título após algum tempo
+                this.tweens.add({
+                    targets: titleImage,
+                    alpha: 0, // Tornar transparente
+                    duration: 2000, // Tempo em milissegundos
+                    delay: 3000, // Espera antes de iniciar o fade
+                    onComplete: () => {
+                        titleImage.destroy(); // Remove o título da cena após o fade
+                    }
+                });
             }
         });
     }
@@ -124,20 +148,5 @@ export class Cutscene extends Scene {
         });
     }
 }
-
-// Configuração e inicialização do Phaser
-// const config = {
-//     type: Phaser.AUTO,
-//     scale: {
-//         mode: Phaser.Scale.FIT,
-//         autoCenter: Phaser.Scale.CENTER_BOTH,
-//         width: window.innerWidth,  // Largura da janela
-//         height: window.innerHeight  // Altura da janela
-//     },
-//     scene: [Cutscene],
-//     pixelArt: true
-// };
-
-// const game = new Phaser.Game(config);
 
 export default Cutscene
