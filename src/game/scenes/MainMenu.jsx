@@ -1,7 +1,7 @@
 // src/scenes/MainMenu.jsx
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import MainMenuScene from './MainMenu'; // Certifique-se de ajustar o caminho
+import MainMenuScene from './Main'; // Certifique-se de ajustar o caminho
 import CutScene from './CutScene';
 import Game from './Game';
 import GameOver from './GameOver';
