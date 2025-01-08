@@ -2,8 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import MainMenuScene from './MainMenu'; // Certifique-se de ajustar o caminho
-import Cutscene from './Game';
-import GameDev from './GameDev';
+import CutScene from './CutScene';
+import Game from './Game';
+import GameOver from './GameOver';
 
 const MainMenu = () => {
     const gameRef = useRef(null);
@@ -17,7 +18,7 @@ const MainMenu = () => {
                 width: window.innerWidth,
                 height: window.innerHeight,
             },
-            scene: [MainMenuScene, Cutscene, GameDev],
+            scene: [MainMenuScene, CutScene, Game, GameOver],
             physics: {
                 default: 'arcade',
                 arcade: {

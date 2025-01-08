@@ -6,44 +6,59 @@ export class MainMenu extends Phaser.Scene {
     }
 
     preload() {
-        // Carrega os recursos necessários, como imagens ou fontes
-        this.load.image('logo', 'assets/logo.png'); // Exemplo: Logo do jogo
+        // Carregar o mapa e o tileset
+        this.load.tilemapTiledJSON('map', '/assets/GameDev/cutscene.json');
+        this.load.image('tiles', '/assets/GameDev/tileset.png');
+        this.load.image('clouds', '/assets/GameDev/clouds.png');
+        this.load.image('rocks', '/assets/GameDev/rocks.png');
+        this.load.image('trees', '/assets/GameDev/trees.png');
+        this.load.image('buildings', '/assets/GameDev/nuclear_reactor.png');
+        this.load.image('reactorExplode', '/assets/GameDev/reactor_explode.png');
+        this.load.image('city', '/assets/GameDev/city.png');
+        this.load.image('normal_title','/assets/GameDev/normal_title.png');
+        this.load.image('play_button','/assets/GameDev/play_button.png');
+        this.load.image('dev_button','/assets/GameDev/dev_button.png');
     }
 
     create() {
-        // Adiciona o logo ao centro da tela
-        this.add.image(this.scale.width / 2, 150, 'logo').setScale(0.5);
 
-        // Adiciona o título ao menu
-        this.add.text(this.scale.width / 2, 250, 'Bem-vindo ao Menu Principal', {
-            fontSize: '32px',
-            fill: '#fff',
-        }).setOrigin(0.5);
+        // Criar o mapa
+        const map = this.make.tilemap({ key: 'map' });
+        
+        const tileset = map.addTilesetImage('tileset', 'tiles');
+        const clouds = map.addTilesetImage('clouds', 'clouds');
+        const rocks = map.addTilesetImage('rocks', 'rocks');
+        const trees = map.addTilesetImage('trees', 'trees');
+        const buildings = map.addTilesetImage('nuclear_reactor', 'buildings');
+        const reactorExplode = map.addTilesetImage('reactor_explode', 'reactorExplode');
+        const city = map.addTilesetImage('city', 'city');
 
-        // Cria o botão para iniciar o jogo
-        const startButton = this.add.text(this.scale.width / 2, 350, 'Iniciar Jogo', {
-            fontSize: '24px',
-            fill: '#fff',
-            backgroundColor: '#000',
-            padding: { x: 20, y: 10 },
-        }).setOrigin(0.5).setInteractive();
+        const layer = map.createLayer('Background', tileset, 0, 0);
+        const layer2 = map.createLayer('Clouds', clouds, 0, 0);
+        const layer3 = map.createLayer('Rocks', rocks, 0, 0);
+        const layer4 = map.createLayer('Trees', trees, 0, 0);
+        const layer5 = map.createLayer('Buildings', buildings, 0, 0);
+        const layer6 = map.createLayer('ReactorExplode', reactorExplode, 0, 0);
+        const layer7 = map.createLayer('City', city, 0, 0);
+        const layer8 = map.createLayer('DetailCity', city, 0, 0);
 
-        // Cria o botão para iniciar o modo de desenvolvimento
-        const devButton = this.add.text(this.scale.width / 2, 400, 'Modo Dev', {
-            fontSize: '24px',
-            fill: '#fff',
-            backgroundColor: '#000',
-            padding: { x: 20, y: 10 },
-        }).setOrigin(0.5).setInteractive();
+        this.add.image(this.scale.width / 2, 200, 'normal_title').setScale(1.5);
 
-        // Evento de clique no botão para iniciar o jogo principal
-        startButton.on('pointerdown', () => {
-            this.scene.start('Cutscene'); // Substitua 'Game' pelo nome real da cena do jogo principal
+        const playButton = this.add.image(this.scale.width / 2, 400, 'play_button').setScale(1);
+        playButton.setInteractive();
+
+        const devButton = this.add.image(this.scale.width / 2, 500, 'dev_button').setScale(1);
+        devButton.setInteractive();
+
+        playButton.on('pointerdown', () => {
+            this.scene.start('CutScene');
         });
 
-        // Evento de clique no botão para iniciar o modo de desenvolvimento
         devButton.on('pointerdown', () => {
-            this.scene.start('GameDev'); // Substitua 'GameDev' pelo nome real da cena de desenvolvimento
+            this.cache.tilemap.remove('map');
+
+            this.scene.stop('MainMenu');
+            this.scene.start('Game');
         });
     }
 }
