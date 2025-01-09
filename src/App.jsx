@@ -10,7 +10,8 @@ import Barras from './game/barras_VidaRiqueza/Barras';
 import NPC from './game/Npc/Npc';
 import MainMenu from './game/scenes/MainMenu';
 import CraftingTable from './game/CraftingTable/CraftingTable';
-import Timer from './game/Timer/Timer';  // Importando o componente Timer
+import Timer from './game/Timer/Timer';
+import RadiationMeter from './game/Radiation/Radiation';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <NPC />
             <CraftingTable />
             <Timer />
+            <RadiationMeter />
           </CraftingTableProvider>
         </BarrasProvider>
       </InventoryProvider>
