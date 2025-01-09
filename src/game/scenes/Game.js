@@ -12,6 +12,12 @@ export class Game extends Scene {
         this.globalCraftingTable.x = 99999;
         this.globalCraftingTable.y = 99999;        
 
+        //NPC
+        this.npcState = false;
+
+        //craftingTable
+        this.craftingTableState = false;
+
     }
 
     preload() {
@@ -190,8 +196,12 @@ export class Game extends Scene {
                 this.npc.x, this.npc.y
             );
 
-            if (distance < 50) { // Distância para interação
+            if (distance < 50  && this.npcState == false) { // Distância para interação
+                this.npcState = true;
                 this.interactWithNPC(this.npc);
+            } else {
+                this.npcState = false;
+                eventEmitter.emit('npc-visible', this.npcState);
             }
         });
 
@@ -209,8 +219,12 @@ export class Game extends Scene {
                 this.globalCraftingTable.x, this.globalCraftingTable.y
             );
 
-            if (distance < 50) { // Distância para interação
+            if (distance < 50 && this.craftingTableState == false) { // Distância para interação
+                this.craftingTableState = true;
                 this.interactWithCraftingTable();
+            } else {
+                this.craftingTableState = false;
+                eventEmitter.emit('craftingTable-visible', this.craftingTableState);
             }
         });
         
@@ -364,13 +378,16 @@ export class Game extends Scene {
     interactWithNPC(npc) {
         // Função para lidar com a interação com o NPC
         // console.log(`Interagindo com o NPC! Tipo: ${npc.getData('type')}`);
-        eventEmitter.emit('npc-interaction', { type: npc.getData('type'), message: 'Olá, jogador! Eu sou um NPC.' });
+        eventEmitter.emit('npc-interaction', { type: npc.getData('type'), message: 'Olá, jogador! Eu sou um NPC.' }, this.npcState);
     }
 
     checkNPCDistance() {
         const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.npc.x, this.npc.y);
         if (distance > 100) {
-            eventEmitter.emit('npc-close');
+            this.npcState = false;
+            eventEmitter.emit('npc-visible', this.npcState);
+
+            // eventEmitter.emit('npc-interaction',{type: "npc", message: "npc"} ,false);
         }
     }
 
@@ -443,14 +460,15 @@ export class Game extends Scene {
         );
 
         if (distance > 100) { // Distância para interação
-            eventEmitter.emit('craftingTable-close');
+            this.craftingTableState = false;
+            eventEmitter.emit('craftingTable-visible', this.craftingTableState);
         }
     }
 
     // Função para interagir com a Crafting Table
     interactWithCraftingTable() {
         console.log("Interagindo com a mesa de crafting...");
-        eventEmitter.emit('craftingTable-interaction');
+        eventEmitter.emit('craftingTable-visible', this.craftingTableState);
     }
 
     

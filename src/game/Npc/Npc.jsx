@@ -35,23 +35,29 @@ const NPC = () => {
     };
 
     useEffect(() => {
-        const handleInteraction = (data) => {
+        const handleInteraction = (data, state) => {
             setNpcMessage(data.message);
-            setIsNPCVisible(true);
-        };
-
-        const handleClose = () => {
-            setIsNPCVisible(false);
+            eventEmitter.emit('npc-visible', state);
         };
 
         // Registrar ouvintes para abrir e fechar o NPC
         eventEmitter.on('npc-interaction', handleInteraction);
-        eventEmitter.on('npc-close', handleClose);
 
         // Limpar ouvintes ao desmontar
         return () => {
             eventEmitter.removeListener('npc-interaction', handleInteraction);
-            eventEmitter.removeListener('npc-close', handleClose);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleVisible = (state) => {
+            setIsNPCVisible(state);
+        };
+
+        eventEmitter.on('npc-visible', handleVisible);
+
+        return () => {
+            eventEmitter.removeListener('npc-visible', handleVisible);
         };
     }, []);
 
