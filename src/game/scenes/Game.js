@@ -178,6 +178,7 @@ export class Game extends Scene {
         eventEmitter.emit('show-hotbar');
         eventEmitter.emit('show-barras');
         eventEmitter.emit('show-timer');
+        eventEmitter.emit('show-radiation');
         eventEmitter.on('timer-ended', () => {
             this.scene.start('GameOver'); // Trocar para a cena GameOver
         });

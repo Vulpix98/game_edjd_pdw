@@ -1,0 +1,115 @@
+.meterStyle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+    border: 5px solid black;
+
+}
+
+
+
+.niveisCor {
+    height: 100%;
+    width: 100%;
+
+    background: conic-gradient(
+      green 0deg,
+      green 44deg,
+      yellow 45deg,
+      yellow 89deg,
+      orange 90deg,
+      orange 134deg,
+      red 135deg,
+      red 180deg
+    );
+
+    border-radius: 50%;
+
+    transform: rotate(-90deg);
+}
+
+
+
+.circuloBranco {
+    width: 80%;
+    height: 80%;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    background-color: white;
+
+    border-radius: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+
+
+.meioCirculoBranco {
+    height: 75px;
+    width: 150px;
+
+    position: absolute;
+    bottom: 0;
+
+    background-color: white;
+
+    border-bottom-right-radius: 75px;
+    border-bottom-left-radius: 75px;
+}
+
+
+
+.needleStyle {
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 90px;
+    background-color: #444;
+
+    clip-path: polygon(50% 0%, 46% 100%, 54% 100%);
+
+    transform-origin: 50% 83%;
+    transform: rotate(var(--rotate));
+    transition: transform 0.1s ease-out;
+}
+
+
+
+.textStyle {
+    position: absolute;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+
+.centroRotacao {
+    background-color: black;
+
+    height: 20px;
+    width: 20px;
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+}
+
+  
