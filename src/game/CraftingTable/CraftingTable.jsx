@@ -12,26 +12,14 @@ const CraftingTable = () => {
 
     // Gerenciar a visibilidade da crafting table com eventos
     useEffect(() => {
-        const handleInteraction = () => {
-            setIsCraftingTableVisible(true);
+        const handleVisible = (state) => {
+            setIsCraftingTableVisible(state);
         };
 
-        eventEmitter.on('craftingTable-interaction', handleInteraction);
+        eventEmitter.on('craftingTable-visible', handleVisible);
 
         return () => {
-            eventEmitter.removeListener('craftingTable-interaction', handleInteraction);
-        };
-    }, []);
-
-    useEffect(() => {
-        const handleClose = () => {
-            setIsCraftingTableVisible(false);
-        };
-
-        eventEmitter.on('craftingTable-close', handleClose);
-
-        return () => {
-            eventEmitter.removeListener('craftingTable-close', handleClose);
+            eventEmitter.removeListener('craftingTable-visible', handleVisible);
         };
     }, []);
 

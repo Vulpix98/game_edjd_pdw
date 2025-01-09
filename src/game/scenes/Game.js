@@ -13,7 +13,10 @@ export class Game extends Scene {
         this.globalCraftingTable.y = 99999;        
 
         //NPC
-        this.npcState = false
+        this.npcState = false;
+
+        //craftingTable
+        this.craftingTableState = false;
 
     }
 
@@ -216,8 +219,12 @@ export class Game extends Scene {
                 this.globalCraftingTable.x, this.globalCraftingTable.y
             );
 
-            if (distance < 50) { // Distância para interação
+            if (distance < 50 && this.craftingTableState == false) { // Distância para interação
+                this.craftingTableState = true;
                 this.interactWithCraftingTable();
+            } else {
+                this.craftingTableState = false;
+                eventEmitter.emit('craftingTable-visible', this.craftingTableState);
             }
         });
         
@@ -453,14 +460,15 @@ export class Game extends Scene {
         );
 
         if (distance > 100) { // Distância para interação
-            eventEmitter.emit('craftingTable-close');
+            this.craftingTableState = false;
+            eventEmitter.emit('craftingTable-visible', this.craftingTableState);
         }
     }
 
     // Função para interagir com a Crafting Table
     interactWithCraftingTable() {
         console.log("Interagindo com a mesa de crafting...");
-        eventEmitter.emit('craftingTable-interaction');
+        eventEmitter.emit('craftingTable-visible', this.craftingTableState);
     }
 
     
