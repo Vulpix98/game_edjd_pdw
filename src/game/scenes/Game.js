@@ -33,6 +33,8 @@ export class Game extends Scene {
         // Carregar o sprite do jogador
         this.load.image('crafting', './././public/assets/Textures/crafting.png');
         this.load.spritesheet('player', './././public/assets/GameDev/walk.png', { frameWidth: 32, frameHeight: 32 });
+
+        this.load.audio('radiation', '/assets/GameDev/radiation_sound.wav');
     }
 
     create() { 
@@ -58,6 +60,17 @@ export class Game extends Scene {
         const layer6 = map.createLayer('ReactorExplode', reactorExplode, 0, 0);
         const layer7 = map.createLayer('City', city, 0, 0);
         const layer8 = map.createLayer('DetailCity', city, 0, 0);
+
+        this.sound.play('radiation', { loop: false, volume: 0.3 });
+
+        // Reproduzir o som de radiação de minuto em minuto
+        this.time.addEvent({
+            delay: 60000, // 60000ms = 1 minuto
+            callback: () => {
+                this.sound.play('radiation', { loop: false, volume: 0.3 });
+            },
+            loop: true, // Fazer o evento repetir a cada minuto
+        });
 
         // Organizar as camadas
         this.backgroundLayer.setDepth(0);
@@ -171,6 +184,7 @@ export class Game extends Scene {
         eventEmitter.emit('show-hotbar');
         eventEmitter.emit('show-barras');
         eventEmitter.emit('show-timer');
+        eventEmitter.emit('show-radiation');
         eventEmitter.on('timer-ended', () => {
             this.scene.start('GameOver'); // Trocar para a cena GameOver
         });
